@@ -18,7 +18,7 @@ namespace ManagementGame.Objects.Entities
             const float movementForce = 10;
             InputManager.KeyPressed(Keys.W).Subscribe(keyEvent =>
             {
-                ApplyForceY(-movementForce);
+                ApplyForceY(-movementForce * 3);
             });
             InputManager.KeyPressed(Keys.A).Subscribe(keyEvent =>
             {
@@ -41,7 +41,7 @@ namespace ManagementGame.Objects.Entities
 
         public override void Update(GameTime gameTime)
         {
-            Console.WriteLine($"({X},{Y}) ({VelX},{VelY})");
+            // Console.WriteLine($"({X},{Y}) ({VelX},{VelY})");
             base.Update(gameTime);
         }
 

@@ -21,7 +21,7 @@ namespace ManagementGame.World
                     int posY = chunkY * Chunk.Size + y;
                     float height = GetHeight(posX);
                     float noiseValue = Noise.CalcPixel2D(posX, posY, 1/10f) - 128;
-                    Console.WriteLine(height);
+                   // Console.WriteLine(height);
 
                     if (posY > height)
                     {

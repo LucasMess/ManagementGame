@@ -11,8 +11,6 @@ namespace ManagementGame.Utils
 {
     static class PhysicsEngine
     {
-        private const float StationaryThreshold = 0.1f;
-
         public static void CalculateVelocity(Entity entity, GameTime gameTime)
         {
             // Air friction.
@@ -31,22 +29,14 @@ namespace ManagementGame.Utils
             entity.Forces.Clear();
         }
 
-        public static void ApplyVelocityAndSolveCollisions(Entity entity, Tile[,] tiles)
+        public static void ApplyVelocityX(Entity entity)
         {
-            //if (Math.Abs(entity.VelY) < StationaryThreshold)
-            //{
-            //    entity.VelX = 0;
-            //}
-            //if (Math.Abs(entity.VelY) < StationaryThreshold)
-            //{
-            //    entity.VelY = 0;
-            //}
+            entity.X += entity.VelX;
+        }
 
-            entity.Y += entity.Velocity.Y;
-            ResolveTerrainCollisionsY(entity, tiles);
-
-            entity.X += entity.Velocity.X;
-            ResolveTerrainCollisionsX(entity, tiles);
+        public static void ApplyVelocityY(Entity entity)
+        {
+            entity.Y += entity.VelY;
         }
 
         public static void ResolveTerrainCollisionsY(Entity entity, Tile[,] tiles)
@@ -120,6 +110,18 @@ namespace ManagementGame.Utils
                         }
                     }
                 }
+            }
+        }
+
+        public static int Round(float value)
+        {
+            if (value >= 0)
+            {
+                return (int)Math.Floor(value);
+            } 
+            else
+            {
+                return (int)Math.Floor(value);
             }
         }
     }

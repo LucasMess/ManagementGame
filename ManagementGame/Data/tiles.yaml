@@ -1,3 +1,9 @@
 ﻿- Name: Grass
   WidthInTiles: 1
   HeightInTiles: 1
+- Name: Sand
+  WidthInTiles: 1
+  HeightInTiles: 1
+- Name: Ball
+  WidthInTiles: 1
+  HeightInTiles: 1

@@ -16,10 +16,16 @@ namespace ManagementGame
         public static int ViewportWidth = 0;
         public static int ViewportHeight = 0;
 
+        public static GraphicsDevice CurrentGraphicsDevice;
+
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         GameWorld gameWorld;
         Camera camera;
+
+        SpriteFont font;
+        FrameCounter frameCounter;
+        Effect effect;
         
         public ManagementGame()
         {
@@ -36,11 +42,13 @@ namespace ManagementGame
         protected override void Initialize()
         {
             IsFixedTimeStep = false;
+            CurrentGraphicsDevice = GraphicsDevice;
             ViewportWidth = GraphicsDevice.Viewport.Width;
             ViewportHeight = GraphicsDevice.Viewport.Height;
 
 
             FileLoader.Initialize();
+            frameCounter = new FrameCounter();
             base.Initialize();
         }
 
@@ -54,10 +62,13 @@ namespace ManagementGame
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             ContentLoader.LoadTileTextures(Content);
+            ContentLoader.LoadShaders(Content);
             gameWorld = new GameWorld();
             camera = new Camera(GraphicsDevice.Viewport);
 
-            gameWorld.LoadChunks();
+            graphics.SynchronizeWithVerticalRetrace = false;
+
+            font = Content.Load<SpriteFont>("Fonts/x32");          
         }
 
         /// <summary>
@@ -81,8 +92,9 @@ namespace ManagementGame
 
             InputManager.Update(gameTime);
 
-            gameWorld.Update(gameTime);
+            gameWorld.Update(gameTime, camera);
             camera.PointTo(gameWorld.player);
+            frameCounter.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -95,9 +107,15 @@ namespace ManagementGame
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, camera.GetTransformMatrix());
-            gameWorld.Draw(spriteBatch);
+            //spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, camera.GetTransformMatrix());
+            gameWorld.Draw(spriteBatch, camera);
+            //spriteBatch.End();
+
+            spriteBatch.Begin();
+            spriteBatch.DrawString(font, $"FPS: {frameCounter.GetFps()}", Vector2.Zero, Color.White);
             spriteBatch.End();
+
+            frameCounter.Reset();
 
             base.Draw(gameTime);
         }
