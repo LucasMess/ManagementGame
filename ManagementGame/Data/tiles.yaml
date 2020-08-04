@@ -1,7 +1,13 @@
 ﻿- Name: Grass
+  Id: 1
+  WidthInTiles: 1
+  HeightInTiles: 1
+- Name: Stone
+  Id: 2
   WidthInTiles: 1
   HeightInTiles: 1
 - Name: Sand
+  Id: 3
   WidthInTiles: 1
   HeightInTiles: 1
 - Name: Ball

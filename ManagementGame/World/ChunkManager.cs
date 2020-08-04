@@ -11,7 +11,7 @@ namespace ManagementGame.World
 {
     class ChunkManager
     {
-        private const int MaxLoadedChunks = 128;
+        private const int MaxLoadedChunks = 0;
 
         private string worldName;
         private TerrainGenerator terrainGenerator;
@@ -43,7 +43,7 @@ namespace ManagementGame.World
 
             if (chunks.Count > MaxLoadedChunks)
             {
-                Console.WriteLine("Removing chunks");
+                // Console.WriteLine("Removing chunks");
                 foreach (var entry in chunks.ToList())
                 {
                     if (!entry.Value.IsActive)
@@ -82,10 +82,10 @@ namespace ManagementGame.World
             chunks.Add(key, chunk);
             chunk.EntityTransfer.Subscribe(entityTransfer =>
             {
-                Console.WriteLine($"({x},{y})");
+                // Console.WriteLine($"({x},{y})");
                 int chunkX = (int)Math.Floor(entityTransfer.Entity.X / Chunk.Size / Tile.Size);
                 int chunkY = (int)Math.Floor(entityTransfer.Entity.Y / Chunk.Size / Tile.Size);
-                Console.WriteLine($"({x},{y}) => ({chunkX},{chunkY})");
+                // Console.WriteLine($"({x},{y}) => ({chunkX},{chunkY})");
                 GetChunk(chunkX, chunkY).AddEntity(entityTransfer.Entity);
             });
         }

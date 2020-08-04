@@ -83,7 +83,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR
     float4 sprite = tex2D(SpriteSampler, input.TextureCoordinates);
     float4 isSolid = tex2D(SolidTileSampler, float2(x / (float)ChunkSize, y / (float)ChunkSize));
 
-    float borderWidth = 5.0f / TileSize;
+    float borderWidth = 1.0f / TileSize;
 
     // if (isSolid[0]) {
     //     return float4(0,0,0,1);

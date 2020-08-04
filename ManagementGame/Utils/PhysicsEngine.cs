@@ -41,6 +41,10 @@ namespace ManagementGame.Utils
 
         public static void ResolveTerrainCollisionsY(Entity entity, Tile[,] tiles)
         {
+            if (!entity.CanCollideWithTerrain)
+            {
+                return;
+            }
             foreach (var tile in tiles)
             {
                 if (!tile.IsSolid)
@@ -55,7 +59,7 @@ namespace ManagementGame.Utils
                         if (entity.CollisionRectangle.Bottom > tile.CollisionRectangle.Top)
                         {
                             // Collided with top of tile.
-                            Console.WriteLine("Collided Top");                            
+                            // Console.WriteLine("Collided Top");                            
                             entity.Y = tile.CollisionRectangle.Top - entity.CollisionRectangle.Height / 2;
                             entity.VelY = (-entity.Elasticity * entity.VelY);
                         }
@@ -65,7 +69,7 @@ namespace ManagementGame.Utils
                         if (entity.CollisionRectangle.Top < tile.CollisionRectangle.Bottom)
                         {
                             // Collided from below.
-                            Console.WriteLine("Collided below");
+                            // Console.WriteLine("Collided below");
                             entity.Y = tile.CollisionRectangle.Bottom + entity.CollisionRectangle.Height / 2;
                             entity.VelY = -entity.Elasticity * entity.VelY;
 
@@ -77,6 +81,10 @@ namespace ManagementGame.Utils
 
         public static void ResolveTerrainCollisionsX(Entity entity, Tile[,] tiles)
         {
+            if (!entity.CanCollideWithTerrain)
+            {
+                return;
+            }
             foreach (var tile in tiles)
             {
                 if (!tile.IsSolid)
@@ -90,7 +98,7 @@ namespace ManagementGame.Utils
                         if (entity.CollisionRectangle.Right > tile.CollisionRectangle.Left)
                         {
                             // Collided from left.
-                            Console.WriteLine("Collided left");
+                            // Console.WriteLine("Collided left");
 
                             entity.X = tile.CollisionRectangle.Left - entity.CollisionRectangle.Width / 2;
                             entity.VelX = (int)(-entity.Elasticity * entity.VelX);
@@ -102,7 +110,7 @@ namespace ManagementGame.Utils
                         if (entity.CollisionRectangle.Left < tile.CollisionRectangle.Right)
                         {
                             // Collided from right.
-                            Console.WriteLine("Collided right");
+                            // Console.WriteLine("Collided right");
 
                             entity.X = tile.CollisionRectangle.Right + entity.CollisionRectangle.Width / 2;
                             entity.VelX = (int)(-entity.Elasticity * entity.VelX);
