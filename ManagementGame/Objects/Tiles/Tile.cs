@@ -16,18 +16,24 @@ namespace ManagementGame.Objects
     /// </summary>
     class Tile : GameObject
     {
-        public const int Size = 16;
-        public const sbyte MaxLightLevel = 16;
+        public const int GridSize = 32;
+        public const int TextureSize = 48;
+        public const int MaxLightLevel = 16;
 
         public string Name;
         public static TileProperties[] Properties;
-        public sbyte LightLevel = 0;
-        public sbyte LightIntensity = 16;
+        public int LightLevel = 0;
+        public int LightIntensity = 16;
+
+        public int TileX;
+        public int TileY;
 
         public Tile(int x, int y, string name)
         {
-            X = x * Size;
-            Y = y * Size;
+            X = x * GridSize;
+            Y = y * GridSize;
+            TileX = x;
+            TileY = y;
             Name = name;
             if (name == "Air")
             {
@@ -35,10 +41,10 @@ namespace ManagementGame.Objects
                 LightLevel = LightIntensity;
             } else
             {
-                Texture = ContentLoader.GetTexture2D(name);
-                DrawRectangleOffset = new Point(Size, Size);
-                CollisionRectangleOffset = new Point(Size, Size);
+                Texture = ContentLoader.GetTexture2D(name);                
             }
+            DrawRectangleSize = new Point(TextureSize, TextureSize);
+            CollisionRectangleSize = new Point(GridSize, GridSize);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -49,13 +55,25 @@ namespace ManagementGame.Objects
                 Color color = new Color(light, light, light, 1);
                 spriteBatch.Draw(Texture, DrawRectangle, Color.White);
             }
+
+        }
+
+        public void DebugDraw(SpriteBatch spriteBatch)
+        {
+            if (Visible)
+            {
+                //spriteBatch.Draw(ContentLoader.DebugTexture, CollisionRectangle, Color.Red * .5f);
+                //spriteBatch.Draw(ContentLoader.DebugTexture, DrawRectangle, Color.Blue * .5f);
+                //spriteBatch.Draw(ContentLoader.DebugTexture, new Rectangle((int)Position.X, (int)Position.Y, 1, 1), Color.Green * .5f);
+                //spriteBatch.DrawString(ContentLoader.GetFont("x32"), LightLevel.ToString(), Position - new Vector2(8, 24), Color.White * .5f);
+            }
         }
 
         public void SetLightLevel(int newLightLevel)
         {
             if (!IsLightSource)
             {
-                LightLevel = (sbyte)newLightLevel;
+                LightLevel = newLightLevel;
             }
         }
 

@@ -11,10 +11,12 @@ using System.Reactive.Subjects;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using Point = Microsoft.Xna.Framework.Point;
 
 namespace ManagementGame.World
 {
-    class Chunk
+    class Chunk : GameObject
     {
         public const int Size = 16;
         public const int TextureMapSize = Size * 2;
@@ -23,16 +25,14 @@ namespace ManagementGame.World
 
         protected Tile[,] Tiles;
         public List<Entity> Entities { get; private set; }
-        private Texture2D Texture;
-        public Rectangle CollisionRectangle;
 
-        public Color debugColor = Debug.GenerateRandomColor();
+        public Color debugColor;
 
         private Subject<EntityTransfer> transferSubject = new Subject<EntityTransfer>();
         public IObservable<EntityTransfer> EntityTransfer => transferSubject.AsObservable<EntityTransfer>();
 
-        public int X { get; private set; }
-        public int Y { get; private set; }
+        public int ChunkX { get; private set; }
+        public int ChunkY { get; private set; }
 
         private Effect tilingEffect;
         private Texture2D solidMap;
@@ -40,16 +40,22 @@ namespace ManagementGame.World
         private Texture2D lightMap;
         private ChunkManager chunkManager;
 
+        private Texture2D mask;
 
         public Chunk(int x, int y, Tile[,] tiles, ChunkManager chunkManager)
         {
-            X = x;
-            Y = y;
+            ChunkX = x;
+            ChunkY = y;
+            X = x * Chunk.Size * Tile.GridSize;
+            Y = y * Chunk.Size * Tile.GridSize;
             this.Tiles = tiles;
             this.chunkManager = chunkManager;
             Entities = new List<Entity>();
-            CollisionRectangle = new Rectangle(x * Chunk.Size * Tile.Size, y * Chunk.Size * Tile.Size, Chunk.Size * Tile.Size, Chunk.Size * Tile.Size);
+            CollisionRectangleSize = new Point(Chunk.Size * Tile.GridSize);
+            DrawRectangleSize = new Point(Chunk.Size * Tile.GridSize);
             Texture = ContentLoader.GetTexture2D("Grass");
+            mask = ContentLoader.GetTexture2D("Mask");
+            debugColor = Debug.GenerateRandomColor();
             MakeSolidMap();
         }
 
@@ -112,7 +118,7 @@ namespace ManagementGame.World
                 foreach (var tile in tiles)
                 {
                     if (!explored.Contains(tile) && tile.LightLevel < curr.LightLevel) {
-                        tile.SetLightLevel(curr.LightLevel - 2);
+                        tile.SetLightLevel(curr.LightLevel - 4);
                         bfsQueue.Enqueue(tile);
                         explored.Add(tile);
                     }
@@ -122,7 +128,7 @@ namespace ManagementGame.World
 
         public void MakeLightMap()
         {
-            Console.WriteLine($"Making light map for {X}, {Y}");
+            Console.WriteLine($"Making light map for {ChunkX}, {ChunkY}");
             for (int y = 0; y < Size; y++)
             {
                 for (int x = 0; x < Size; x++)
@@ -142,8 +148,8 @@ namespace ManagementGame.World
             {
                 for (int x = 0; x < TextureMapSamplingSize; x++)
                 {
-                    float worldX = (X * Tile.Size * Size) + (x - 1) * Tile.Size;
-                    float worldY = (Y * Tile.Size * Size) + (y - 1) * Tile.Size;
+                    float worldX = X + (x - 1) * Tile.GridSize;
+                    float worldY = Y + (y - 1) * Tile.GridSize;
 
                     int i = y * TextureMapSize + x;
                     var tile = chunkManager.GetTileAt(worldX, worldY);
@@ -184,7 +190,6 @@ namespace ManagementGame.World
 
                 if (CollisionRectangle.Contains(entity.CollisionRectangle))
                 {
-                    debugColor = Debug.GenerateRandomColor();
                     PhysicsEngine.ApplyVelocityY(entity);
                     PhysicsEngine.ResolveTerrainCollisionsY(entity, Tiles);
                     PhysicsEngine.ApplyVelocityX(entity);
@@ -197,7 +202,6 @@ namespace ManagementGame.World
                     PhysicsEngine.ApplyVelocityY(entity);
                     foreach (var chunk in chunks)
                     {
-                        chunk.debugColor = Debug.GenerateRandomColor();
                         PhysicsEngine.ResolveTerrainCollisionsY(entity, chunk.Tiles);
                     }
                     PhysicsEngine.ApplyVelocityX(entity);
@@ -217,16 +221,17 @@ namespace ManagementGame.World
             spriteBatch.Begin(SpriteSortMode.Immediate, null, SamplerState.PointWrap, null, null, null);
             tilingEffect = ContentLoader.GetShader("tiling");
             //tilingEffect.Parameters["SpriteTexture1"].SetValue(ContentLoader.GetTexture2D("Grass"));
-            tilingEffect.Parameters["ChunkX"].SetValue(X);
-            tilingEffect.Parameters["ChunkY"].SetValue(Y);
-            tilingEffect.Parameters["ChunkSize"].SetValue(Size);
-            tilingEffect.Parameters["TileSize"].SetValue(Tile.Size);
-            tilingEffect.Parameters["SolidTileTexture"].SetValue(solidMap);
-            tilingEffect.Parameters["LightMap"].SetValue(lightMap);
-            tilingEffect.Parameters["LightMapSize"].SetValue(TextureMapSize);
-            tilingEffect.Parameters["ViewMatrix"].SetValue(camera.GetViewMatrix());
+            tilingEffect.Parameters["ChunkX"]?.SetValue(ChunkX);
+            tilingEffect.Parameters["ChunkY"]?.SetValue(ChunkY);
+            tilingEffect.Parameters["ChunkSize"]?.SetValue(Size);
+            tilingEffect.Parameters["GridSize"]?.SetValue(Tile.GridSize);
+            tilingEffect.Parameters["SolidTileTexture"]?.SetValue(solidMap);
+            tilingEffect.Parameters["Mask"]?.SetValue(mask);
+            tilingEffect.Parameters["LightMap"]?.SetValue(lightMap);
+            tilingEffect.Parameters["LightMapSize"]?.SetValue(TextureMapSize);
+            tilingEffect.Parameters["ViewMatrix"]?.SetValue(camera.GetViewMatrix());
             //tilingEffect.Parameters["WorldMatrix"].SetValue(camera.GetWorldMatrix());
-            tilingEffect.Parameters["ProjectionMatrix"].SetValue(camera.GetProjectionMatrix());
+            tilingEffect.Parameters["ProjectionMatrix"]?.SetValue(camera.GetProjectionMatrix());
             tilingEffect.CurrentTechnique.Passes[0].Apply();
             foreach (var tile in Tiles)
             {
@@ -241,9 +246,14 @@ namespace ManagementGame.World
 
             spriteBatch.End();
 
-            //spriteBatch.Begin(SpriteSortMode.Immediate, null, SamplerState.PointWrap, null, null, null, camera.GetViewMatrix());
-            //spriteBatch.Draw(solidTiles, CollisionRectangle, Color.Red);
-            //spriteBatch.End();
+            spriteBatch.Begin(SpriteSortMode.Immediate, null, SamplerState.PointWrap, null, null, null, camera.GetViewMatrix());
+            spriteBatch.Draw(lightMap, new Rectangle((int)X, (int)Y, 32, 32), new Rectangle(1, 1, 16, 16), debugColor * .5f);
+            //spriteBatch.Draw(ContentLoader.DebugTexture, CollisionRectangle, debugColor * .5f);
+            foreach (var tile in Tiles)
+            {
+                tile.DebugDraw(spriteBatch);
+            }
+            spriteBatch.End();
 
         }
 
@@ -264,7 +274,7 @@ namespace ManagementGame.World
             {
                 for (int j = 0; j < 3; j++)
                 {
-                    var tilePos = tile.Position + new Vector2(i, j) * Tile.Size - new Vector2(Tile.Size, Tile.Size);
+                    var tilePos = tile.Position + new Vector2(i, j) * Tile.GridSize - new Vector2(Tile.GridSize, Tile.GridSize);
                     var other = chunkManager.GetTileAt(tilePos.X, tilePos.Y);
                     if (other != null)
                     {

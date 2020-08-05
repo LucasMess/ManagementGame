@@ -22,8 +22,8 @@ namespace ManagementGame.Objects.Entities
         {
             this.viewport = viewport;
             AffectedByGravity = false;
-            ViewWidth = (int)Math.Ceiling((float)viewport.Width / Tile.Size / Chunk.Size / 2) + 1;
-            ViewHeight = (int)Math.Ceiling((float)viewport.Height / Tile.Size / Chunk.Size / 2) + 1;
+            ViewWidth = (int)Math.Ceiling((float)viewport.Width / Tile.GridSize / Chunk.Size / 2) + 1;
+            ViewHeight = (int)Math.Ceiling((float)viewport.Height / Tile.GridSize / Chunk.Size / 2) + 1;
             //Console.WriteLine($"ViewRadius is {ViewRadius}");
         }
 

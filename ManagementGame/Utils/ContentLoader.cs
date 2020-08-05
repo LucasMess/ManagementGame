@@ -15,6 +15,7 @@ namespace ManagementGame.Utils
     {
         static Dictionary<string, Texture2D> textures;
         static Dictionary<string, Effect> shaders;
+        static Dictionary<string, SpriteFont> fonts;
 
         public static void LoadTileTextures(ContentManager content)
         {
@@ -37,6 +38,12 @@ namespace ManagementGame.Utils
             shaders.Add("tiling", content.Load<Effect>("Shaders/tiling"));
         }
 
+        public static void LoadFonts(ContentManager content)
+        {
+            fonts = new Dictionary<string, SpriteFont>();
+            fonts.Add("x32", content.Load<SpriteFont>("Fonts/x32"));
+        }
+
         public static Effect GetShader(string name)
         {
             return shaders[name];
@@ -46,5 +53,12 @@ namespace ManagementGame.Utils
         {
             return textures[name];
         }
+        public static SpriteFont GetFont(string name)
+        {
+            return fonts[name];
+        }
+
+        public static Texture2D DebugTexture => textures["Blank"];
+
     }
 }

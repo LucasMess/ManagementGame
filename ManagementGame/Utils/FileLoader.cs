@@ -71,7 +71,7 @@ namespace ManagementGame.Utils
 
         public static void SaveChunk(string worldName, Chunk chunk)
         {
-            string path = Path.Combine(WorldsDirectory, worldName, "chunks", $"({chunk.X},{chunk.Y}).json");
+            string path = Path.Combine(WorldsDirectory, worldName, "chunks", $"({chunk.ChunkX},{chunk.ChunkY}).json");
             SaveJson(path, chunk);
         }
 

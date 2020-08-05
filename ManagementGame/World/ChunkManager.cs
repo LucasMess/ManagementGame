@@ -31,8 +31,8 @@ namespace ManagementGame.World
                 chunk.IsActive = false;
             }
 
-            int centerX = (int)Math.Floor(camera.X / Tile.Size / Chunk.Size);
-            int centerY = (int)Math.Floor(camera.Y / Tile.Size / Chunk.Size);
+            int centerX = (int)Math.Floor(camera.X / Tile.GridSize / Chunk.Size);
+            int centerY = (int)Math.Floor(camera.Y / Tile.GridSize / Chunk.Size);
             for (int y = 0; y <= camera.ViewHeight * 2; y++)
             {
                 for (int x = 0; x <= camera.ViewWidth * 2; x++)
@@ -87,8 +87,8 @@ namespace ManagementGame.World
             chunk.EntityTransfer.Subscribe(entityTransfer =>
             {
                 // Console.WriteLine($"({x},{y})");
-                int chunkX = (int)Math.Floor(entityTransfer.Entity.X / Chunk.Size / Tile.Size);
-                int chunkY = (int)Math.Floor(entityTransfer.Entity.Y / Chunk.Size / Tile.Size);
+                int chunkX = (int)Math.Floor(entityTransfer.Entity.X / Chunk.Size / Tile.GridSize);
+                int chunkY = (int)Math.Floor(entityTransfer.Entity.Y / Chunk.Size / Tile.GridSize);
                 // Console.WriteLine($"({x},{y}) => ({chunkX},{chunkY})");
                 GetChunk(chunkX, chunkY).AddEntity(entityTransfer.Entity);
             });
@@ -109,29 +109,29 @@ namespace ManagementGame.World
         public List<Chunk> GetNeighborsAndSelf(Chunk chunk)
         {
             var neighbors = new List<Chunk>();
-            neighbors.Add(GetChunk(chunk.X - 1, chunk.Y - 1, false));
-            neighbors.Add(GetChunk(chunk.X, chunk.Y - 1, false));
-            neighbors.Add(GetChunk(chunk.X + 1, chunk.Y - 1, false));
-            neighbors.Add(GetChunk(chunk.X - 1, chunk.Y, false));
-            neighbors.Add(GetChunk(chunk.X, chunk.Y, false));
-            neighbors.Add(GetChunk(chunk.X + 1, chunk.Y, false));
-            neighbors.Add(GetChunk(chunk.X - 1, chunk.Y + 1, false));
-            neighbors.Add(GetChunk(chunk.X, chunk.Y + 1, false));
-            neighbors.Add(GetChunk(chunk.X + 1, chunk.Y + 1, false));
+            neighbors.Add(GetChunk(chunk.ChunkX - 1, chunk.ChunkY - 1, false));
+            neighbors.Add(GetChunk(chunk.ChunkX, chunk.ChunkY - 1, false));
+            neighbors.Add(GetChunk(chunk.ChunkX + 1, chunk.ChunkY - 1, false));
+            neighbors.Add(GetChunk(chunk.ChunkX - 1, chunk.ChunkY, false));
+            neighbors.Add(GetChunk(chunk.ChunkX, chunk.ChunkY, false));
+            neighbors.Add(GetChunk(chunk.ChunkX + 1, chunk.ChunkY, false));
+            neighbors.Add(GetChunk(chunk.ChunkX - 1, chunk.ChunkY + 1, false));
+            neighbors.Add(GetChunk(chunk.ChunkX, chunk.ChunkY + 1, false));
+            neighbors.Add(GetChunk(chunk.ChunkX + 1, chunk.ChunkY + 1, false));
             return neighbors.Where(x => x != null).ToList();
         }
 
         public Tile GetTileAt(float worldX, float worldY)
         {
-            int chunkX = (int)Math.Floor(worldX / (float)Chunk.Size / Tile.Size);
-            int chunkY = (int)Math.Floor(worldY / (float)Chunk.Size / Tile.Size);
+            int chunkX = (int)Math.Floor(worldX / (float)Chunk.Size / Tile.GridSize);
+            int chunkY = (int)Math.Floor(worldY / (float)Chunk.Size / Tile.GridSize);
             var chunk = GetChunk(chunkX, chunkY, false);
             if (chunk != null)
             {
-                float relativeX = worldX - (chunkX * Chunk.Size * Tile.Size);
-                float relativeY = worldY - (chunkY * Chunk.Size * Tile.Size);
-                int x = (int)Math.Floor(relativeX / Chunk.Size) % Chunk.Size;
-                int y = (int)Math.Floor(relativeY / Chunk.Size) % Chunk.Size;
+                float relativeX = worldX - (chunkX * Chunk.Size * Tile.GridSize);
+                float relativeY = worldY - (chunkY * Chunk.Size * Tile.GridSize);
+                int x = (int)Math.Floor(relativeX / Tile.GridSize) % Chunk.Size;
+                int y = (int)Math.Floor(relativeY / Tile.GridSize) % Chunk.Size;
                 return chunk.GetTile(x, y);
             }
             else return null;

@@ -13,3 +13,9 @@
 - Name: Ball
   WidthInTiles: 1
   HeightInTiles: 1
+- Name: Mask
+  WidthInTiles: 1
+  HeightInTiles: 1
+- Name: Blank
+  WidthInTiles: 1
+  HeightInTiles: 1

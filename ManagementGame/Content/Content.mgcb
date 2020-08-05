@@ -25,6 +25,18 @@
 /processorParam:TextureFormat=Color
 /build:Art/Ball.png
 
+#begin Art/Blank.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Art/Blank.png
+
 #begin Art/Grass.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -36,6 +48,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Art/Grass.png
+
+#begin Art/Mask.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Art/Mask.png
 
 #begin Art/Sand.png
 /importer:TextureImporter

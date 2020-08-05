@@ -64,8 +64,8 @@ namespace ManagementGame.World
 
         public void SpawnEntity(Entity entity, int x, int y)
         {
-            int chunkX = x / Chunk.Size / Tile.Size;
-            int chunkY = y / Chunk.Size / Tile.Size;
+            int chunkX = x / Chunk.Size / Tile.GridSize;
+            int chunkY = y / Chunk.Size / Tile.GridSize;
             chunkManager.GetChunk(chunkX, chunkY).AddEntity(entity);
         }
     }

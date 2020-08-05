@@ -37,20 +37,20 @@ namespace ManagementGame.Objects
 
         protected Texture2D Texture { get; set; }
         public Rectangle DrawRectangle => new Rectangle(
-            (int)Math.Ceiling(X) - DrawRectangleOffset.X / 2,
-            (int)Math.Ceiling(Y) - DrawRectangleOffset.Y / 2,
-            DrawRectangleOffset.X,
-            DrawRectangleOffset.Y
+            (int)Math.Ceiling(X) - DrawRectangleSize.X / 2,
+            (int)Math.Ceiling(Y) - DrawRectangleSize.Y / 2,
+            DrawRectangleSize.X,
+            DrawRectangleSize.Y
         );
         public Rectangle CollisionRectangle => new Rectangle(
-            (int)Math.Ceiling(X) - CollisionRectangleOffset.X / 2,
-            (int)Math.Ceiling(Y) - CollisionRectangleOffset.Y / 2,
-            CollisionRectangleOffset.X,
-            CollisionRectangleOffset.Y
+            (int)Math.Ceiling(X) - CollisionRectangleSize.X / 2,
+            (int)Math.Ceiling(Y) - CollisionRectangleSize.Y / 2,
+            CollisionRectangleSize.X,
+            CollisionRectangleSize.Y
         );
 
-        protected Point DrawRectangleOffset;
-        protected Point CollisionRectangleOffset;
+        protected Point DrawRectangleSize;
+        protected Point CollisionRectangleSize;
 
         public virtual void Draw(SpriteBatch spriteBatch) {
 

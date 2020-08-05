@@ -25,12 +25,12 @@ namespace ManagementGame
 
         SpriteFont font;
         FrameCounter frameCounter;
-        Effect effect;
         
         public ManagementGame()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            graphics.GraphicsProfile = GraphicsProfile.HiDef;
         }
 
         /// <summary>
@@ -63,12 +63,13 @@ namespace ManagementGame
 
             ContentLoader.LoadTileTextures(Content);
             ContentLoader.LoadShaders(Content);
+            ContentLoader.LoadFonts(Content);
             gameWorld = new GameWorld();
             camera = new Camera(GraphicsDevice.Viewport);
 
             graphics.SynchronizeWithVerticalRetrace = false;
 
-            font = Content.Load<SpriteFont>("Fonts/x32");          
+            font = ContentLoader.GetFont("x32");  
         }
 
         /// <summary>
