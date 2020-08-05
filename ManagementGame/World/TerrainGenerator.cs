@@ -10,7 +10,7 @@ namespace ManagementGame.World
 {
     class TerrainGenerator
     { 
-        public Chunk GenerateChunk(int chunkX, int chunkY)
+        public Chunk GenerateChunk(int chunkX, int chunkY, ChunkManager chunkManager)
         {
             Tile[,] tiles = new Tile[Chunk.Size, Chunk.Size];
             for (int y = 0; y < Chunk.Size; y++)
@@ -43,7 +43,7 @@ namespace ManagementGame.World
                    
                 }
             }
-            return new Chunk(chunkX, chunkY, tiles);
+            return new Chunk(chunkX, chunkY, tiles, chunkManager);
         }
 
         private float GetHeight(int x)
@@ -59,7 +59,7 @@ namespace ManagementGame.World
             float rareLargeCaves = GetNoise2D(x + 200, y + 200, 0, 100, 128);
             float details = GetNoise2D(x + 200, y + 200, 0, 100, 16);
             float res = (float)Math.Pow((baseNoise * 3 + rareLargeCaves * 1 + details * 5) / 9, 2);
-            Console.WriteLine(res);
+            //Console.WriteLine(res);
             return res > 3000;
         }
 

@@ -13,6 +13,7 @@ int ChunkSize;
 int TileSize;
 int ChunkX;
 int ChunkY;
+int LightMapSize;
 float4x4 WorldMatrix;
 float4x4 ViewMatrix;
 float4x4 ProjectionMatrix;
@@ -28,6 +29,15 @@ Texture2D SolidTileTexture;
 sampler2D SolidTileSampler = sampler_state
 {
 	Texture = <SolidTileTexture>;
+    Filter = Point;
+    AddressU = Wrap;
+    AddressV = Wrap;
+};
+
+Texture2D LightMap;
+sampler2D LightMapSampler = sampler_state
+{
+	Texture = <LightMap>;
     Filter = Point;
     AddressU = Wrap;
     AddressV = Wrap;
@@ -58,6 +68,15 @@ float4 sampleSolid(int x, int y) {
         return float4(1, 1, 1, 1);
     }
     return tex2D(SolidTileSampler, float2(x / (float)ChunkSize, y / (float)ChunkSize));
+}
+
+float sampleLight(int x, int y) {
+    x++;
+    y++;
+    if (x < 0 || y < 0 || x >= ChunkSize + 2 || y >= ChunkSize + 2) {
+        return 1.0f;
+    }
+    return tex2D(LightMapSampler, float2(x,y) / (LightMapSize))[0];
 }
 
 VertexShaderOutput MainVS(VertexShaderInput input)
@@ -134,7 +153,21 @@ float4 MainPS(VertexShaderOutput input) : COLOR
         }  
     }
 
-    return sprite;
+    // Light level
+    float light = sampleLight(x, y);
+    float lightAbove = sampleLight(x, y - 1);
+    float lightBelow = sampleLight(x, y + 1);
+    float lightRight = sampleLight(x + 1, y);
+    float lightLeft = sampleLight(x - 1, y);
+
+    float2 lightDirection = float2(
+        lerp(lightLeft, lightRight, input.TextureCoordinates[0]),
+        lerp(lightAbove, lightBelow, input.TextureCoordinates[1])
+    );
+
+    float lightTotal = (lightDirection.x + lightDirection.y) / 2.0f;  
+
+    return float4(sprite.xyz * lightTotal, 1.0f);
 }
 
 

@@ -33,11 +33,11 @@ namespace ManagementGame.World
 
             int centerX = (int)Math.Floor(camera.X / Tile.Size / Chunk.Size);
             int centerY = (int)Math.Floor(camera.Y / Tile.Size / Chunk.Size);
-            for (int y = 0; y <= camera.ViewRadius * 2; y++)
+            for (int y = 0; y <= camera.ViewHeight * 2; y++)
             {
-                for (int x = 0; x <= camera.ViewRadius * 2; x++)
+                for (int x = 0; x <= camera.ViewWidth * 2; x++)
                 {
-                    GetChunk(centerX + x - camera.ViewRadius, centerY + y - camera.ViewRadius);
+                    GetChunk(centerX + x - camera.ViewWidth, centerY + y - camera.ViewHeight);
                 }
             }
 
@@ -56,12 +56,12 @@ namespace ManagementGame.World
 
         private Chunk LoadChunk(int x, int y)
         {
-            Chunk chunk = terrainGenerator.GenerateChunk(x, y);
+            Chunk chunk = terrainGenerator.GenerateChunk(x, y, this);
             SetChunk(x, y, chunk);
             return chunk;
         }
 
-        public Chunk GetChunk(int x, int y)
+        public Chunk GetChunk(int x, int y, bool load = true)
         {
             string key = $"({x},{y})";
             if (chunks.ContainsKey(key))
@@ -70,9 +70,13 @@ namespace ManagementGame.World
                 chunk.IsActive = true;
                 return chunk;
             }
-            else
+            else if (load)
             {
                 return LoadChunk(x, y);
+            } 
+            else
+            {
+                return null;
             }
         }
 
@@ -88,6 +92,13 @@ namespace ManagementGame.World
                 // Console.WriteLine($"({x},{y}) => ({chunkX},{chunkY})");
                 GetChunk(chunkX, chunkY).AddEntity(entityTransfer.Entity);
             });
+
+            // Recalculate surrounding light.
+            var surr = GetNeighborsAndSelf(chunk);
+            foreach (var s in surr)
+            {
+                s.MakeLightMap();
+            }
         }
 
         public Dictionary<string, Chunk>.ValueCollection GetChunks()
@@ -97,17 +108,33 @@ namespace ManagementGame.World
 
         public List<Chunk> GetNeighborsAndSelf(Chunk chunk)
         {
-            var neighbors = new List<Chunk>(9);
-            neighbors.Add(GetChunk(chunk.X - 1, chunk.Y - 1));
-            neighbors.Add(GetChunk(chunk.X, chunk.Y - 1));
-            neighbors.Add(GetChunk(chunk.X + 1, chunk.Y - 1));
-            neighbors.Add(GetChunk(chunk.X - 1, chunk.Y));
-            neighbors.Add(GetChunk(chunk.X, chunk.Y));
-            neighbors.Add(GetChunk(chunk.X + 1, chunk.Y));
-            neighbors.Add(GetChunk(chunk.X - 1, chunk.Y + 1));
-            neighbors.Add(GetChunk(chunk.X, chunk.Y + 1));
-            neighbors.Add(GetChunk(chunk.X + 1, chunk.Y + 1));
-            return neighbors;
+            var neighbors = new List<Chunk>();
+            neighbors.Add(GetChunk(chunk.X - 1, chunk.Y - 1, false));
+            neighbors.Add(GetChunk(chunk.X, chunk.Y - 1, false));
+            neighbors.Add(GetChunk(chunk.X + 1, chunk.Y - 1, false));
+            neighbors.Add(GetChunk(chunk.X - 1, chunk.Y, false));
+            neighbors.Add(GetChunk(chunk.X, chunk.Y, false));
+            neighbors.Add(GetChunk(chunk.X + 1, chunk.Y, false));
+            neighbors.Add(GetChunk(chunk.X - 1, chunk.Y + 1, false));
+            neighbors.Add(GetChunk(chunk.X, chunk.Y + 1, false));
+            neighbors.Add(GetChunk(chunk.X + 1, chunk.Y + 1, false));
+            return neighbors.Where(x => x != null).ToList();
+        }
+
+        public Tile GetTileAt(float worldX, float worldY)
+        {
+            int chunkX = (int)Math.Floor(worldX / (float)Chunk.Size / Tile.Size);
+            int chunkY = (int)Math.Floor(worldY / (float)Chunk.Size / Tile.Size);
+            var chunk = GetChunk(chunkX, chunkY, false);
+            if (chunk != null)
+            {
+                float relativeX = worldX - (chunkX * Chunk.Size * Tile.Size);
+                float relativeY = worldY - (chunkY * Chunk.Size * Tile.Size);
+                int x = (int)Math.Floor(relativeX / Chunk.Size) % Chunk.Size;
+                int y = (int)Math.Floor(relativeY / Chunk.Size) % Chunk.Size;
+                return chunk.GetTile(x, y);
+            }
+            else return null;
         }
     }
 }

@@ -13,14 +13,18 @@ namespace ManagementGame.Objects.Entities
     {
         private Viewport viewport;
 
-        public int ViewRadius;
+        public int ViewWidth;
+        public int ViewHeight;
+
+        public float Zoom = 1f;
 
         public Camera(Viewport viewport)
         {
             this.viewport = viewport;
             AffectedByGravity = false;
-            ViewRadius = (int)Math.Ceiling((float)viewport.Width / Tile.Size / Chunk.Size / 2);
-            Console.WriteLine($"ViewRadius is {ViewRadius}");
+            ViewWidth = (int)Math.Ceiling((float)viewport.Width / Tile.Size / Chunk.Size / 2) + 1;
+            ViewHeight = (int)Math.Ceiling((float)viewport.Height / Tile.Size / Chunk.Size / 2) + 1;
+            //Console.WriteLine($"ViewRadius is {ViewRadius}");
         }
 
         public void PointTo(GameObject gameObject)
@@ -32,7 +36,8 @@ namespace ManagementGame.Objects.Entities
         {
             var pos3 = (new Vector3(Position, 0) - new Vector3(viewport.Width / 2f, viewport.Height * 2f / 3, 0)) * -1;
             pos3 = new Vector3((float)Math.Ceiling(pos3.X), (float)Math.Ceiling(pos3.Y), (float)Math.Ceiling(pos3.Z));
-            return Matrix.CreateTranslation(pos3);
+            var scale = new Vector3(Zoom, Zoom, 0);
+            return Matrix.CreateTranslation(pos3) * Matrix.CreateScale(scale);
         }
 
         public Matrix GetWorldMatrix()

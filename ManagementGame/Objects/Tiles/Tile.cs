@@ -17,8 +17,12 @@ namespace ManagementGame.Objects
     class Tile : GameObject
     {
         public const int Size = 16;
+        public const sbyte MaxLightLevel = 16;
+
         public string Name;
         public static TileProperties[] Properties;
+        public sbyte LightLevel = 0;
+        public sbyte LightIntensity = 16;
 
         public Tile(int x, int y, string name)
         {
@@ -28,6 +32,7 @@ namespace ManagementGame.Objects
             if (name == "Air")
             {
                 Visible = false;
+                LightLevel = LightIntensity;
             } else
             {
                 Texture = ContentLoader.GetTexture2D(name);
@@ -40,10 +45,23 @@ namespace ManagementGame.Objects
         {
             if (Visible)
             {
+                float light = (LightLevel / (float)MaxLightLevel);
+                Color color = new Color(light, light, light, 1);
                 spriteBatch.Draw(Texture, DrawRectangle, Color.White);
             }
         }
 
+        public void SetLightLevel(int newLightLevel)
+        {
+            if (!IsLightSource)
+            {
+                LightLevel = (sbyte)newLightLevel;
+            }
+        }
+
         public bool IsSolid => Name != "Air";
+        public bool IsTransparent => Name == "Air";
+        public bool IsLightSource => Name == "Air";
+
     }
 }
