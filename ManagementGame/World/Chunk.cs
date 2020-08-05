@@ -8,10 +8,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using Point = Microsoft.Xna.Framework.Point;
 
 namespace ManagementGame.World
@@ -114,11 +110,11 @@ namespace ManagementGame.World
                     continue;
                 }
 
-                var tiles = GetSurroundingTiles(curr);
+                var tiles = GetAdjacentTiles(curr);
                 foreach (var tile in tiles)
                 {
                     if (!explored.Contains(tile) && tile.LightLevel < curr.LightLevel) {
-                        tile.SetLightLevel(curr.LightLevel - 4);
+                        tile.SetLightLevel(curr.LightLevel - Tile.LightFalloff);
                         bfsQueue.Enqueue(tile);
                         explored.Add(tile);
                     }
@@ -218,7 +214,7 @@ namespace ManagementGame.World
 
 
 
-            spriteBatch.Begin(SpriteSortMode.Immediate, null, SamplerState.PointWrap, null, null, null);
+            spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null);
             tilingEffect = ContentLoader.GetShader("tiling");
             //tilingEffect.Parameters["SpriteTexture1"].SetValue(ContentLoader.GetTexture2D("Grass"));
             tilingEffect.Parameters["ChunkX"]?.SetValue(ChunkX);
@@ -246,8 +242,8 @@ namespace ManagementGame.World
 
             spriteBatch.End();
 
-            spriteBatch.Begin(SpriteSortMode.Immediate, null, SamplerState.PointWrap, null, null, null, camera.GetViewMatrix());
-            spriteBatch.Draw(lightMap, new Rectangle((int)X, (int)Y, 32, 32), new Rectangle(1, 1, 16, 16), debugColor * .5f);
+            spriteBatch.Begin(SpriteSortMode.Immediate, null, SamplerState.AnisotropicClamp, null, null, null, camera.GetViewMatrix());
+            //spriteBatch.Draw(lightMap, CollisionRectangle, new Rectangle(1, 1, 16, 16), debugColor * .5f);
             //spriteBatch.Draw(ContentLoader.DebugTexture, CollisionRectangle, debugColor * .5f);
             foreach (var tile in Tiles)
             {
@@ -267,22 +263,14 @@ namespace ManagementGame.World
             return Tiles[x, y];
         }
 
-        public List<Tile> GetSurroundingTiles(Tile tile)
+        public List<Tile> GetAdjacentTiles(Tile tile)
         {
             List<Tile> surrounding = new List<Tile>();
-            for (int i = 0; i < 3; i++)
-            {
-                for (int j = 0; j < 3; j++)
-                {
-                    var tilePos = tile.Position + new Vector2(i, j) * Tile.GridSize - new Vector2(Tile.GridSize, Tile.GridSize);
-                    var other = chunkManager.GetTileAt(tilePos.X, tilePos.Y);
-                    if (other != null)
-                    {
-                        surrounding.Add(other);
-                    }
-                }
-            }
-            return surrounding;
+            surrounding.Add(chunkManager.GetTileAt(tile.X + Tile.GridSize, tile.Y));
+            surrounding.Add(chunkManager.GetTileAt(tile.X - Tile.GridSize, tile.Y));
+            surrounding.Add(chunkManager.GetTileAt(tile.X, tile.Y + Tile.GridSize));
+            surrounding.Add(chunkManager.GetTileAt(tile.X, tile.Y - Tile.GridSize));
+            return surrounding.Where(x => x != null).ToList();
         }
     }
 

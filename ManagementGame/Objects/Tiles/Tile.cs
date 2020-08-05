@@ -18,12 +18,13 @@ namespace ManagementGame.Objects
     {
         public const int GridSize = 32;
         public const int TextureSize = 48;
-        public const int MaxLightLevel = 16;
+        public const int MaxLightLevel = 8;
+        public const int LightFalloff = 2;
 
         public string Name;
         public static TileProperties[] Properties;
         public int LightLevel = 0;
-        public int LightIntensity = 16;
+        public int LightIntensity = 8;
 
         public int TileX;
         public int TileY;
@@ -65,7 +66,7 @@ namespace ManagementGame.Objects
                 //spriteBatch.Draw(ContentLoader.DebugTexture, CollisionRectangle, Color.Red * .5f);
                 //spriteBatch.Draw(ContentLoader.DebugTexture, DrawRectangle, Color.Blue * .5f);
                 //spriteBatch.Draw(ContentLoader.DebugTexture, new Rectangle((int)Position.X, (int)Position.Y, 1, 1), Color.Green * .5f);
-                //spriteBatch.DrawString(ContentLoader.GetFont("x32"), LightLevel.ToString(), Position - new Vector2(8, 24), Color.White * .5f);
+               //spriteBatch.DrawString(ContentLoader.GetFont("x32"), LightLevel.ToString(), Position - new Vector2(8, 24), Color.White * .5f);
             }
         }
 

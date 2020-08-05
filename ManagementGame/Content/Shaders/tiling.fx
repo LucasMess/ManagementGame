@@ -38,9 +38,9 @@ Texture2D LightMap;
 sampler2D LightMapSampler = sampler_state
 {
 	Texture = <LightMap>;
-    Filter = Point;
-    AddressU = Wrap;
-    AddressV = Wrap;
+    Filter = Anisotropic;
+    AddressU = Clamp;
+    AddressV = Clamp;
 };
 
 Texture2D Mask;
@@ -96,7 +96,7 @@ VertexShaderOutput MainVS(VertexShaderInput input)
 
     float4 viewPosition = mul(offsetPos, ViewMatrix);
     output.Position = mul(viewPosition, ProjectionMatrix);
-    output.WorldPosition = offsetPos +  float4(16, 16, 0, 0);
+    output.WorldPosition = offsetPos +  float4(32, 32, 0, 0);
     output.Color = input.Color;
     output.TextureCoordinates = input.TextureCoordinates;
     return output;
@@ -132,169 +132,19 @@ float4 MainPS(VertexShaderOutput input) : COLOR
     if (mask.x == 0)
         return float4(0,0,0,0);
 
-    float light = sampleLight(x, y);
-    // return float4(light, light, light, 1.0f);
+    float2 lightMapCoord = float2(relativeX + 1, relativeY + 1) / GridSize / LightMapSize;
+    float offset = .02f;
+    // float light = sampleLight(x, y);    
+    float light = tex2D(LightMapSampler, lightMapCoord)[0];
+    float light1 = tex2D(LightMapSampler, lightMapCoord + float2(0, offset))[0];
+    float light2 = tex2D(LightMapSampler, lightMapCoord + float2(0, -offset))[0];
+    float light3 = tex2D(LightMapSampler, lightMapCoord + float2(offset, 0))[0];
+    float light4 = tex2D(LightMapSampler, lightMapCoord + float2(-offset, 0))[0];
 
-    //return float4(input.TextureCoordinates.x, input.TextureCoordinates.y, 0, 1);
+    light = (light + light1 + light2 + light3 + light4) / 5;
 
-    // return float4(x /16.0f, y /16.0f, 0, 1);
-
-    // if (sampleSolid(x, y)) {
-    //     return float4(0,0,0,1);
-    // }
-    // return float4(1, 1, 1, 1);
-
-    // Borders.
-    //Above.
-    // if (!sampleSolid(x, y - 1)) {
-    //     if (maskAbove == 0 && texY < transitionBand){
-    //         return float4(0,0,0,1);
-    //     }  
-    // }
-    // // Below.
-    // if (!sampleSolid(x, y + 1)) {
-    //     if (maskBelow){
-    //         return float4(0,0,0,1);
-    //     }  
-    // }
-    // // Right.
-    // if (!sampleSolid(x - 1, y)) {
-    //     if (maskRight){
-    //         return float4(0,0,0,1);
-    //     }   
-    // }
-    // // Left.
-    // if (!sampleSolid(x + 1, y)) {
-    //     if (maskLeft){
-    //         return float4(0,0,0,1);
-    //     }   
-    // }
-
-
-    // if (!sampleSolid(x + 1, y + 1)[0]) {
-    //     if (input.TextureCoordinates[0] > 1 - borderWidth && input.TextureCoordinates[1] > 1 - borderWidth){
-    //         return float4(0,0,0,1);
-    //     }  
-    // }
-    // if (!sampleSolid(x - 1, y - 1)[0]) {
-    //     if (input.TextureCoordinates[0] < borderWidth && input.TextureCoordinates[1] < borderWidth){
-    //         return float4(0,0,0,1);
-    //     }  
-    // }
-    // if (!sampleSolid(x + 1, y - 1)[0]) {
-    //     if (input.TextureCoordinates[0] > 1 - borderWidth && input.TextureCoordinates[1] < borderWidth){
-    //         return float4(0,0,0,1);
-    //     }  
-    // }
-    // if (!sampleSolid(x - 1, y + 1)[0]) {
-    //     if (input.TextureCoordinates[0] < borderWidth && input.TextureCoordinates[1] > 1 - borderWidth){
-    //         return float4(0,0,0,1);
-    //     }  
-    // }
-
-    // Light level
-    // float light = sampleLight(x, y);
-    float lightAbove = sampleLight(x, y - 1);
-    float lightBelow = sampleLight(x, y + 1);
-    float lightRight = sampleLight(x + 1, y);
-    float lightLeft = sampleLight(x - 1, y);
-
-    // float2 lightDirection = float2(
-    //     lerp(lightLeft, lightRight, input.TextureCoordinates.x),
-    //     lerp(lightAbove, lightBelow, input.TextureCoordinates.y)
-    // );
-
-    // float2 texOffset = ((input.TextureCoordinates * 64 - 20) % 32) / 32;
-    float2 texOffset = ((input.TextureCoordinates * 48 - 8));
-    if (texOffset.x < 0) {
-        texOffset.x = 48 + 16 + texOffset.x;
-    }
-    if (texOffset.y < 0) {
-        texOffset.y = 48 + 16 + texOffset.y;
-    }
-    texOffset = (texOffset % 32) / 32;
-
-    float2 lightDirection = float2(
-        lerp(lightLeft, lightRight, texOffset.x),
-        lerp(lightAbove, lightBelow, texOffset.y)
-    );
-    float lightTotal = (lightDirection.x + lightDirection.y) / 2.0f;  
-    return float4(sprite.xyz * lightTotal,  1.0f);
-
-
-    return float4(texOffset.xy * lightTotal, 0,  1.0f);
+    return float4(sprite.xyz * light,  1.0f);   
 }
-
-
-
-
-// float4 MainPS(ShaderIO input) : COLOR
-// {
-//     return SpriteTexture1.Sample(SampleType, input.TextureCoordinates);
-    
-//     float4 color1;
-//     float4 color2;
-//     float4 blendColor;
-
-//     float borderWidth = .05f;
-//     float factor = 16.0f;
-
-//     float4 worldPos = mul(float4(input.Position[0], input.Position[1], 0, 0), WorldMatrix);
-
-//     int x = abs(floor((worldPos[0] - ChunkX * ChunkSize * GridSize) / ChunkSize));
-//     int y = abs(floor((worldPos[1] - ChunkY * ChunkSize * GridSize) / ChunkSize));
-
-//     if (sampleSolid(x, y - 1)[0]) {
-//         return float4(x / factor, y / factor,0,1);     
-//     }
-//     return SpriteTexture1.Sample(SampleType, input.TextureCoordinates);
-
-//     // if (input.tex[0] > 1 - borderWidth)
-//     // {
-//     //     if (!sampleSolid(x + 1, y)[0]) {
-//     //         return float4(0,0,0,1);
-//     //     }
-//     // }
-//     // if (input.tex[1] > 1 - borderWidth) {
-//     //     if (!sampleSolid(x, y + 1)[0]) {
-//     //         return float4(0,0,0,1);
-//     //     }
-//     // }
-//     // if (input.tex[0] < borderWidth) {
-//     //     if (!sampleSolid(x - 1, y)[0]) {
-//     //         return float4(0,0,0,1);
-//     //     }
-//     // }
-//     // if (input.tex[1] < borderWidth) 
-//     // {
-//     //     if (!sampleSolid(x, y - 1)[0]) {
-//     //         return float4(0,0,0,1);
-//     //     }
-//     // }
-
-//     // return SpriteTexture1.Sample(SampleType, input.tex);
-
-
-//     // if (input.tex[0] > .5f) {
-//     //     blendColor = SpriteTexture1.Sample(SampleType, input.tex);
-//     // } else {
-//     //     blendColor = SpriteTexture2.Sample(SampleType, input.tex);
-//     // }
-
-//     // Get the pixel color from the first texture.
-//     // color1 = SpriteTexture1.Sample(SampleType, input.tex);
-
-//     // // Get the pixel color from the second texture.
-//     // color2 = SpriteTexture2.Sample(SampleType, input.tex);
-
-//     // // Blend the two pixels together and multiply by the gamma value.
-//     // blendColor = color1 * color2 * 2.0;
-    
-//     // // Saturate the final color.
-//     // blendColor = saturate(blendColor);
-
-//     return blendColor;
-// }
 
 technique SpriteDrawing
 {
