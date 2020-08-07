@@ -16,14 +16,14 @@ namespace ManagementGame.Objects.Entities
         public int ViewWidth;
         public int ViewHeight;
 
-        public float Zoom = 1f;
+        public float Zoom = .5f;
 
         public Camera(Viewport viewport)
         {
             this.viewport = viewport;
             AffectedByGravity = false;
-            ViewWidth = (int)Math.Ceiling((float)viewport.Width / Tile.GridSize / Chunk.Size / 2) + 1;
-            ViewHeight = (int)Math.Ceiling((float)viewport.Height / Tile.GridSize / Chunk.Size / 2) + 1;
+            ViewWidth = (int)Math.Ceiling((float)viewport.Width / Zoom / Tile.GridSize / Chunk.Size / 2) + 1;
+            ViewHeight = (int)Math.Ceiling((float)viewport.Height / Zoom / Tile.GridSize / Chunk.Size / 2) + 1;
             //Console.WriteLine($"ViewRadius is {ViewRadius}");
         }
 
@@ -34,7 +34,7 @@ namespace ManagementGame.Objects.Entities
 
         public Matrix GetViewMatrix()
         {
-            var pos3 = (new Vector3(Position, 0) - new Vector3(viewport.Width / 2f, viewport.Height * 2f / 3, 0)) * -1;
+            var pos3 = (new Vector3(Position, 0) - new Vector3(viewport.Width / Zoom / 2f, viewport.Height / Zoom * 2f / 3, 0)) * -1;
             pos3 = new Vector3((float)Math.Ceiling(pos3.X), (float)Math.Ceiling(pos3.Y), (float)Math.Ceiling(pos3.Z));
             var scale = new Vector3(Zoom, Zoom, 0);
             return Matrix.CreateTranslation(pos3) * Matrix.CreateScale(scale);

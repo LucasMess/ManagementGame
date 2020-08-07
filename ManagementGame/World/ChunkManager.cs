@@ -97,6 +97,7 @@ namespace ManagementGame.World
             var surr = GetNeighborsAndSelf(chunk);
             foreach (var s in surr)
             {
+                s.MakeSolidMap();
                 s.MakeLightMap();
             }
         }

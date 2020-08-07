@@ -74,7 +74,7 @@ Texture2D Mask;
 sampler2D MaskSampler = sampler_state
 {
 	Texture = <Mask>;
-    Filter = Point;
+    Filter = Linear;
     AddressU = Wrap;
     AddressV = Wrap;
 };
@@ -99,7 +99,9 @@ struct VertexShaderOutput
 };
 
 float sampleSolid(int x, int y) {
-    return tex2D(SolidTileSampler, float2(x / (float)ChunkSize, y / (float)ChunkSize)).r > 0;
+    x++;
+    y++;
+    return tex2D(SolidTileSampler, float2(x / (float)LightMapSize, y / (float)LightMapSize)).r > 0;
 }
 
 // Determine solidity of tiles around.
@@ -201,13 +203,12 @@ float4 MainPS(VertexShaderOutput input) : COLOR
     float2 texturePixelCoords = input.TextureCoordinates * TileDrawSize;
     // Translate and scale it so that it samples from the correct mask.
     float2 maskPixelCoords = (texturePixelCoords + GetMaskOffset(tileIndex.x, tileIndex.y)) / MaskTextureSize;
-
     float4 mask = tex2D(MaskSampler, maskPixelCoords);
-    return float4(sprite.rgb * (1 - mask.r), 1.0) * (1 - mask.g);
 
-
-    float2 lightMapCoord = relativeCoord.xy + float2(1, 1) / GridSize / LightMapSize;
+    // Lights
+    float2 lightMapCoord = (relativeCoord.xy / GridSize + float2(1, 1)) / LightMapSize;
     float offset = .02f;
+    // Blur lights.
     float light = tex2D(LightMapSampler, lightMapCoord)[0];
     float light1 = tex2D(LightMapSampler, lightMapCoord + float2(0, offset))[0];
     float light2 = tex2D(LightMapSampler, lightMapCoord + float2(0, -offset))[0];
@@ -216,7 +217,9 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 
     light = (light + light1 + light2 + light3 + light4) / 5;
 
-    return float4(sprite.xyz * light,  1.0f);   
+    //return float4(light, light, light, 1.0);
+
+    return float4(sprite.rgb * (1 - mask.r) * light, 1.0) * (1 - mask.g);  
 }
 
 

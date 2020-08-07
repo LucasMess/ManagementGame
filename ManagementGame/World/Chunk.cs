@@ -52,7 +52,6 @@ namespace ManagementGame.World
             Texture = ContentLoader.GetTexture2D("Grass");
             mask = ContentLoader.GetTexture2D("Mask");
             debugColor = Debug.GenerateRandomColor();
-            MakeSolidMap();
         }
 
         public Chunk(ChunkData data)
@@ -72,23 +71,30 @@ namespace ManagementGame.World
             //}
         }
 
-        private void MakeSolidMap()
+        public void MakeSolidMap()
         {
-            solidMap = new Texture2D(ManagementGame.CurrentGraphicsDevice, Size, Size);
-            Color[] pixels = new Color[Size * Size];
+            solidMap = new Texture2D(ManagementGame.CurrentGraphicsDevice, TextureMapSize, TextureMapSize);
+            Color[] pixels = new Color[TextureMapSize * TextureMapSize];
 
-            for (int y = 0; y < Size; y++)
+            for (int y = 0; y < TextureMapSamplingSize; y++)
             {
-                for (int x = 0; x < Size; x++)
-                {
-                    int i = y * Size + x;
-                    if (Tiles[x, y].IsSolid)
+                for (int x = 0; x < TextureMapSamplingSize; x++)
+                {                    
+                    float worldX = X + (x - 1) * Tile.GridSize;
+                    float worldY = Y + (y - 1) * Tile.GridSize;
+
+                    int i = y * TextureMapSize + x;
+                    var tile = chunkManager.GetTileAt(worldX, worldY);
+                    if (tile != null)
                     {
-                        pixels[i] = new Color(1f, 1f, 1f, 1f);
-                    }
-                    else
-                    {
-                        pixels[i] = new Color(0, 0, 0, 0);
+                        if (tile.IsSolid)
+                        {
+                            pixels[i] = new Color(1f, 1f, 1f, 1f);
+                        }
+                        else
+                        {
+                            pixels[i] = new Color(0, 0, 0, 0);
+                        }
                     }
                 }
             }
@@ -243,7 +249,7 @@ namespace ManagementGame.World
             spriteBatch.End();
 
             spriteBatch.Begin(SpriteSortMode.Immediate, null, SamplerState.AnisotropicClamp, null, null, null, camera.GetViewMatrix());
-            //spriteBatch.Draw(lightMap, CollisionRectangle, new Rectangle(1, 1, 16, 16), debugColor * .5f);
+            //spriteBatch.Draw(solidMap, CollisionRectangle, debugColor * .5f);
             //spriteBatch.Draw(ContentLoader.DebugTexture, CollisionRectangle, debugColor * .5f);
             foreach (var tile in Tiles)
             {
