@@ -36,7 +36,7 @@ namespace ManagementGame.Objects.Entities
             Texture = ContentLoader.GetTexture2D("Grass");
             CanCollideWithTerrain = true;
             AffectedByGravity = true;
-            DrawRectangleSize = new Point(Tile.TextureSize, Tile.TextureSize);
+            DrawRectangleSize = new Point(Tile.DrawSize, Tile.DrawSize);
             CollisionRectangleSize = new Point(Tile.GridSize, Tile.GridSize);
             Elasticity = .8f;
         }

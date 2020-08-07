@@ -16,8 +16,8 @@ namespace ManagementGame.Objects
     /// </summary>
     class Tile : GameObject
     {
-        public const int GridSize = 32;
-        public const int TextureSize = 48;
+        public const int GridSize = 64;
+        public const int DrawSize = 80;
         public const int MaxLightLevel = 8;
         public const int LightFalloff = 2;
 
@@ -44,7 +44,7 @@ namespace ManagementGame.Objects
             {
                 Texture = ContentLoader.GetTexture2D(name);                
             }
-            DrawRectangleSize = new Point(TextureSize, TextureSize);
+            DrawRectangleSize = new Point(DrawSize, DrawSize);
             CollisionRectangleSize = new Point(GridSize, GridSize);
         }
 
