@@ -23,12 +23,19 @@ namespace ManagementGame.Utils
 
             string path = Path.Combine(FileLoader.DistDirectory, "Data", "tiles.yaml");
             var tiles = FileLoader.LoadYaml<TileProperties[]>(path);
-            Tile.Properties = tiles;
+            Tile.Properties = tiles.OrderBy(x => x.Id).ToArray();
 
             foreach (var tile in tiles)
             {
-                Console.WriteLine($"Loading {tile.Name}");
-                textures.Add(tile.Name, content.Load<Texture2D>($"Art/{tile.Name}"));
+                try
+                {
+                    Console.WriteLine($"Loading {tile.Name}");
+                    textures.Add(tile.Name, content.Load<Texture2D>($"Art/{tile.Name}"));
+                }
+                catch (ContentLoadException e)
+                {
+                    Console.WriteLine($"Could not find texture for {tile.Name}");
+                }
             }
         }
 

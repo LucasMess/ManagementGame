@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ManagementGame.Objects;
+using ManagementGame.Objects.Tiles;
 using SimplexNoise;
 
 namespace ManagementGame.World
@@ -25,19 +26,19 @@ namespace ManagementGame.World
                     {
                         if (posY > height + 20)
                         {
-                            tiles[x, y] = new Tile(posX, posY, "Stone");
+                            tiles[x, y] = new Tile(posX, posY, TileType.Stone);
                         }
                         else if (posY > height)
                         {
-                            tiles[x, y] = new Tile(posX, posY, "Grass");
+                            tiles[x, y] = new Tile(posX, posY, TileType.Grass);
                         }
                         else
                         {
-                            tiles[x, y] = new Tile(posX, posY, "Air");
+                            tiles[x, y] = new Tile(posX, posY, TileType.Air);
                         }
                     } else
                     {
-                        tiles[x, y] = new Tile(posX, posY, "Air");
+                        tiles[x, y] = new Tile(posX, posY, TileType.Air);
                     }
 
                    

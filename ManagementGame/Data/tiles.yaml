@@ -1,4 +1,7 @@
-﻿- Name: Grass
+﻿- Name: Air
+  Id: 0
+  IsSolid: false
+- Name: Grass
   Id: 1
   WidthInTiles: 1
   HeightInTiles: 1
@@ -10,12 +13,14 @@
   Id: 3
   WidthInTiles: 1
   HeightInTiles: 1
-- Name: Ball
-  WidthInTiles: 1
-  HeightInTiles: 1
+# - Name: Ball
+#   WidthInTiles: 1
+#   HeightInTiles: 1
 - Name: Mask
+  Id: 4
   WidthInTiles: 1
   HeightInTiles: 1
 - Name: Blank
+  Id: 5
   WidthInTiles: 1
   HeightInTiles: 1

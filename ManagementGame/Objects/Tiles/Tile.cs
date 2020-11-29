@@ -21,7 +21,9 @@ namespace ManagementGame.Objects
         public const int MaxLightLevel = 8;
         public const int LightFalloff = 2;
 
-        public string Name;
+
+        public TileType TileType;
+        public int Id = -1;
         public static TileProperties[] Properties;
         public int LightLevel = 0;
         public int LightIntensity = 8;
@@ -29,20 +31,22 @@ namespace ManagementGame.Objects
         public int TileX;
         public int TileY;
 
-        public Tile(int x, int y, string name)
+        public Tile(int x, int y, TileType tileType)
         {
             X = x * GridSize;
             Y = y * GridSize;
             TileX = x;
             TileY = y;
-            Name = name;
-            if (name == "Air")
+            Id = (int)tileType;
+            TileType = tileType;
+            if (TileType == TileType.Air)
             {
                 Visible = false;
                 LightLevel = LightIntensity;
-            } else
+            } 
+            else
             {
-                Texture = ContentLoader.GetTexture2D(name);                
+                Texture = ContentLoader.GetTexture2D(Name);                
             }
             DrawRectangleSize = new Point(DrawSize, DrawSize);
             CollisionRectangleSize = new Point(GridSize, GridSize);
@@ -81,6 +85,8 @@ namespace ManagementGame.Objects
         public bool IsSolid => Name != "Air";
         public bool IsTransparent => Name == "Air";
         public bool IsLightSource => Name == "Air";
+
+        public string Name => Properties[Id].Name;
 
     }
 }
