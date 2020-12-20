@@ -15,6 +15,17 @@ namespace ManagementGame.Utils
     {
         private static Dictionary<Keys, ISubject<KeyEvent>> pressedSubjects = new Dictionary<Keys, ISubject<KeyEvent>>();
         private static Dictionary<Keys, ISubject<KeyEvent>> releasedSubjects = new Dictionary<Keys, ISubject<KeyEvent>>();
+        
+        private static Subject<MouseEvent> leftMouseButtonPressed = new Subject<MouseEvent>();
+        private static Subject<MouseEvent> leftMouseButtonReleased = new Subject<MouseEvent>();
+
+        private static Subject<MouseEvent> rightMouseButtonPressed = new Subject<MouseEvent>();
+        private static Subject<MouseEvent> rightMouseButtonReleased = new Subject<MouseEvent>();
+
+        private static Subject<MouseEvent> leftMouseButtonState = new Subject<MouseEvent>();
+        private static Subject<MouseEvent> rightMouseButtonState = new Subject<MouseEvent>();
+
+        private static Subject<Point> mousePosition = new Subject<Point>();
 
         public static void Update(GameTime gameTime)
         {
@@ -33,6 +44,32 @@ namespace ManagementGame.Utils
                     entry.Value.OnNext(new KeyEvent() { Key = entry.Key, State = KeyState.Up });
                 }
             }
+                      
+            var mouseState = Mouse.GetState();
+            var mousePos = new Point(mouseState.X, mouseState.Y);
+            if (mouseState.LeftButton == ButtonState.Pressed)
+            {
+                leftMouseButtonPressed.OnNext(new MouseEvent() { Pressed = true, Position = mousePos });
+                leftMouseButtonState.OnNext(new MouseEvent() { Pressed = true, Position = mousePos });
+            } 
+            else
+            {
+                leftMouseButtonReleased.OnNext(new MouseEvent() { Pressed = false, Position = mousePos });
+                leftMouseButtonState.OnNext(new MouseEvent() { Pressed = false, Position = mousePos });
+            }
+
+            if (mouseState.RightButton == ButtonState.Pressed)
+            {
+                rightMouseButtonPressed.OnNext(new MouseEvent() { Pressed = true, Position = mousePos });
+                rightMouseButtonState.OnNext(new MouseEvent() { Pressed = true, Position = mousePos });
+            }
+            else
+            {
+                rightMouseButtonReleased.OnNext(new MouseEvent() { Pressed = false, Position = mousePos });
+                rightMouseButtonState.OnNext(new MouseEvent() { Pressed = false, Position = mousePos });
+            }
+
+            mousePosition.OnNext(mousePos);
 
         }
 
@@ -55,7 +92,20 @@ namespace ManagementGame.Utils
             dict.Add(key, new Subject<KeyEvent>());
             return dict[key];
         }
-       
+
+        public static IObservable<MouseEvent> LeftMouseButtonPressed => leftMouseButtonPressed.AsObservable();
+
+        public static IObservable<MouseEvent> LeftMouseButtonReleased => leftMouseButtonReleased.AsObservable();
+
+        public static IObservable<MouseEvent> RightMouseButtonPressed => rightMouseButtonPressed.AsObservable();
+
+        public static IObservable<MouseEvent> RightMouseButtonReleased => rightMouseButtonReleased.AsObservable();
+
+        public static IObservable<MouseEvent> LeftMouseButtonState => leftMouseButtonState.AsObservable();
+
+        public static IObservable<MouseEvent> RightMouseButtonState => rightMouseButtonState.AsObservable();
+
+        public static IObservable<Point> MousePosition => mousePosition.AsObservable();
     }
 
     struct KeyEvent
@@ -64,5 +114,10 @@ namespace ManagementGame.Utils
         public KeyState State;
     }
 
+    struct MouseEvent
+    {
+        public bool Pressed;
+        public Point Position;
+    }
 
 }

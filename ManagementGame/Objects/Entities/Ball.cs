@@ -20,8 +20,8 @@ namespace ManagementGame.Objects.Entities
             Texture = ContentLoader.GetTexture2D("Ball");
             CollisionRectangleSize = new Point(16, 16);
             color = Debug.GenerateRandomColor();
-            VelX = (GameWorld.Random.Next(0, 5) - 2);
-            VelY = (GameWorld.Random.Next(0, 5) - 2);
+            VelX = (Dungeon.Random.Next(0, 5) - 2);
+            VelY = (Dungeon.Random.Next(0, 5) - 2);
         }
 
         public override void Draw(SpriteBatch spriteBatch)

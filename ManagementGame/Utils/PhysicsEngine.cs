@@ -14,12 +14,12 @@ namespace ManagementGame.Utils
         public static void CalculateVelocity(Entity entity, GameTime gameTime)
         {
             // Air friction.
-            entity.ApplyForce(GameWorld.FrictionCoeffAir * -entity.Velocity);
+            entity.ApplyForce(Dungeon.FrictionCoeffAir * -entity.Velocity);
             // Gravity.
-            if (entity.AffectedByGravity)
-            {
-                entity.ApplyForceY(GameWorld.GravitationalForce);
-            }
+            //if (entity.AffectedByGravity)
+            //{
+            //    entity.ApplyForceY(GameWorld.GravitationalForce);
+            //}
 
             // Sum forces and get acceleration.
             var forceTotal = new Microsoft.Xna.Framework.Vector2(entity.Forces.Sum(i => i.X), entity.Forces.Sum(i => i.Y));

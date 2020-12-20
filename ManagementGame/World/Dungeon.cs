@@ -11,24 +11,24 @@ using System.Threading.Tasks;
 
 namespace ManagementGame.World
 {
-    class GameWorld
+    class Dungeon
     {
         public const int MapHeightInChunks = 5;
-        public const int MaxHeightInTiles = MapHeightInChunks * Chunk.Size;
 
         public const float GravitationalForce = 10;
         public const float FrictionCoeffAir = .999f;
 
         public static Random Random = new Random();
 
-        private ChunkManager chunkManager;
-
         public Player player;
 
-        public GameWorld()
+        private Room room;
+
+        public Dungeon()
         {
+            room = new Room();
+
             player = new Player();
-            chunkManager = new ChunkManager("test");
             SpawnEntity(player, 0, 0);
 
             //for (int i = 0; i < 100; i++)
@@ -41,32 +41,19 @@ namespace ManagementGame.World
 
         public void Update(GameTime gameTime, Camera camera)
         {
-            chunkManager.LoadChunksAroundCamera(camera);
-            foreach (var chunk in chunkManager.GetChunks().ToList())
-            {
-                chunk.TransferEntities();
-            }
-            foreach (var chunk in chunkManager.GetChunks())
-            {
-                chunk.Update(gameTime, chunkManager);
-            }
+            room.Update(gameTime);
+            
         }
         
 
         public void Draw(SpriteBatch spriteBatch, Camera camera)
-        {
-            foreach (var chunk in chunkManager.GetChunks())
-            {
-                
-                chunk.Draw(spriteBatch, camera);
-            }
+        {                
+            room.Draw(spriteBatch, camera);
         }
 
         public void SpawnEntity(Entity entity, int x, int y)
         {
-            int chunkX = x / Chunk.Size / Tile.GridSize;
-            int chunkY = y / Chunk.Size / Tile.GridSize;
-            chunkManager.GetChunk(chunkX, chunkY).AddEntity(entity);
+            room.AddEntity(entity);
         }
     }
 }

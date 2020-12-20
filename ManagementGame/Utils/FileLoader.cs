@@ -51,17 +51,17 @@ namespace ManagementGame.Utils
             DistDirectory = Environment.CurrentDirectory;
         }
 
-        public static WorldData LoadWorld(string worldName)
-        {
-            string path = Path.Combine(WorldsDirectory, worldName, "world.json");
-            return LoadJson<WorldData>(path);
-        }
+        //public static WorldData LoadWorld(string worldName)
+        //{
+        //    string path = Path.Combine(WorldsDirectory, worldName, "world.json");
+        //    return LoadJson<WorldData>(path);
+        //}
 
-        public static ChunkData LoadChunk(string worldName, int x, int y)
-        {
-            string path = Path.Combine(WorldsDirectory, worldName, "chunks",  $"({x},{y}).json");
-            return LoadJson<ChunkData>(path);
-        }
+        //public static ChunkData LoadChunk(string worldName, int x, int y)
+        //{
+        //    string path = Path.Combine(WorldsDirectory, worldName, "chunks",  $"({x},{y}).json");
+        //    return LoadJson<ChunkData>(path);
+        //}
 
         public static void SaveWorld(string worldName, WorldData worldData)
         {
@@ -69,11 +69,11 @@ namespace ManagementGame.Utils
             SaveJson(path, worldData);
         }
 
-        public static void SaveChunk(string worldName, Chunk chunk)
-        {
-            string path = Path.Combine(WorldsDirectory, worldName, "chunks", $"({chunk.ChunkX},{chunk.ChunkY}).json");
-            SaveJson(path, chunk);
-        }
+        //public static void SaveChunk(string worldName, Room chunk)
+        //{
+        //    string path = Path.Combine(WorldsDirectory, worldName, "chunks", $"({chunk.ChunkX},{chunk.ChunkY}).json");
+        //    SaveJson(path, chunk);
+        //}
 
         public static T LoadJson<T>(string filePath) {
             string text = File.ReadAllText(filePath);

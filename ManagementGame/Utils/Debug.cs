@@ -13,7 +13,7 @@ namespace ManagementGame.Utils
 
         public static Color GenerateRandomColor()
         {
-            return new Color(GameWorld.Random.Next(0, 256), GameWorld.Random.Next(0, 256), GameWorld.Random.Next(0, 256), 128);
+            return new Color(Dungeon.Random.Next(0, 256), Dungeon.Random.Next(0, 256), Dungeon.Random.Next(0, 256), 128);
         }
     }
 }

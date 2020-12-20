@@ -22,8 +22,8 @@ namespace ManagementGame.Objects.Entities
         {
             this.viewport = viewport;
             AffectedByGravity = false;
-            ViewWidth = (int)Math.Ceiling((float)viewport.Width / Zoom / Tile.GridSize / Chunk.Size / 2) + 1;
-            ViewHeight = (int)Math.Ceiling((float)viewport.Height / Zoom / Tile.GridSize / Chunk.Size / 2) + 1;
+            ViewWidth = (int)Math.Ceiling((float)viewport.Width / Zoom / 2) + 1;
+            ViewHeight = (int)Math.Ceiling((float)viewport.Height / Zoom /2) + 1;
             //Console.WriteLine($"ViewRadius is {ViewRadius}");
         }
 
@@ -47,7 +47,7 @@ namespace ManagementGame.Objects.Entities
 
         public Matrix GetProjectionMatrix()
         {
-            PresentationParameters pp = ManagementGame.CurrentGraphicsDevice.PresentationParameters;
+            PresentationParameters pp = DungeonGame.CurrentGraphicsDevice.PresentationParameters;
             return Matrix.CreateOrthographicOffCenter(0, pp.BackBufferWidth, pp.BackBufferHeight, 0, -2000f, 2000f);
         }
 

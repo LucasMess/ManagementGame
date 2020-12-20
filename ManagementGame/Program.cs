@@ -13,7 +13,7 @@ namespace ManagementGame
         [STAThread]
         static void Main()
         {
-            using (var game = new ManagementGame())
+            using (var game = new DungeonGame())
                 game.Run();
         }
     }

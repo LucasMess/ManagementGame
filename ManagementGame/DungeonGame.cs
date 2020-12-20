@@ -1,17 +1,20 @@
 ﻿using ManagementGame.Objects.Entities;
 using ManagementGame.Utils;
+using ManagementGame.Networking;
 using ManagementGame.World;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Reactive.Linq;
+using ManagementGame.UI;
 
 namespace ManagementGame
 {
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
-    public class ManagementGame : Game
+    public class DungeonGame : Game
     {
         public static int ViewportWidth = 0;
         public static int ViewportHeight = 0;
@@ -20,13 +23,16 @@ namespace ManagementGame
 
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        GameWorld gameWorld;
+        Dungeon gameWorld;
         Camera camera;
+        GameClient client;
 
         SpriteFont font;
         FrameCounter frameCounter;
+
+        Div uiRoot;
         
-        public ManagementGame()
+        public DungeonGame()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
@@ -49,6 +55,26 @@ namespace ManagementGame
 
             FileLoader.Initialize();
             frameCounter = new FrameCounter();
+
+            client = new GameClient();
+            client.Connect();
+
+            InputManager.LeftMouseButtonState.DistinctUntilChanged().Subscribe((mouseEvent) =>
+            {
+                if (mouseEvent.Pressed)
+                {
+                    client.CreateGame();
+                } 
+            });
+
+            InputManager.RightMouseButtonState.DistinctUntilChanged().Subscribe((mouseEvent) =>
+            {
+                if (mouseEvent.Pressed)
+                {
+                    client.JoinGame();
+                }
+            });
+
             base.Initialize();
         }
 
@@ -64,12 +90,26 @@ namespace ManagementGame
             ContentLoader.LoadTileTextures(Content);
             ContentLoader.LoadShaders(Content);
             ContentLoader.LoadFonts(Content);
-            gameWorld = new GameWorld();
+            gameWorld = new Dungeon();
             camera = new Camera(GraphicsDevice.Viewport);
 
             graphics.SynchronizeWithVerticalRetrace = false;
 
-            font = ContentLoader.GetFont("x32");  
+            font = ContentLoader.GetFont("x32");
+
+            uiRoot = new Div();
+            uiRoot.SetMargin(300, 0, 0, 0);
+            uiRoot.LayoutDirection = LayoutDirection.Horizontal;
+
+            var helloButton = new Button("Hello World!");
+            helloButton.SetMargin(50, 50, 50, 50);
+            helloButton.SetPadding(50, 50, 50, 50);
+
+            var howdyButton = new Button("Howdy");
+            howdyButton.SetMargin(50, 50, 50, 50);
+
+            uiRoot.AppendChild(helloButton);
+            uiRoot.AppendChild(howdyButton);
         }
 
         /// <summary>
@@ -113,8 +153,12 @@ namespace ManagementGame
             //spriteBatch.End();
 
             spriteBatch.Begin();
-            spriteBatch.DrawString(font, $"FPS: {frameCounter.GetFps()}", Vector2.Zero, Color.White);
+            uiRoot.Draw(spriteBatch);
             spriteBatch.End();
+
+            //spriteBatch.Begin();
+            //spriteBatch.DrawString(font, $"FPS: {frameCounter.GetFps()}", Vector2.Zero, Color.White);
+            //spriteBatch.End();
 
             frameCounter.Reset();
 
