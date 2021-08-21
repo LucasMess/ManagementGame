@@ -12,11 +12,12 @@ namespace ManagementGame.Objects.Entities
     class Camera : Entity
     {
         private Viewport viewport;
+        private Vector2 pointToPosition;
 
         public int ViewWidth;
         public int ViewHeight;
 
-        public float Zoom = .5f;
+        public float Zoom = 1f;
 
         public Camera(Viewport viewport)
         {
@@ -29,13 +30,14 @@ namespace ManagementGame.Objects.Entities
 
         public void PointTo(GameObject gameObject)
         {
-            Position = gameObject.Position;
+            pointToPosition = gameObject.Position;
         }
 
         public Matrix GetViewMatrix()
         {
-            var pos3 = (new Vector3(Position, 0) - new Vector3(viewport.Width / Zoom / 2f, viewport.Height / Zoom * 2f / 3, 0)) * -1;
+            var pos3 = (new Vector3(pointToPosition, 0) - new Vector3(viewport.Width / Zoom / 2f, viewport.Height / Zoom * 2f / 3, 0)) * -1;
             pos3 = new Vector3((float)Math.Ceiling(pos3.X), (float)Math.Ceiling(pos3.Y), (float)Math.Ceiling(pos3.Z));
+            Position = new Vector2(pos3.X, pos3.Y);
             var scale = new Vector3(Zoom, Zoom, 0);
             return Matrix.CreateTranslation(pos3) * Matrix.CreateScale(scale);
         }

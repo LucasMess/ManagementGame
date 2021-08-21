@@ -5,7 +5,8 @@ namespace ManagementGame.Objects.Tiles
     enum TileType : int
     {
         Air = 0,
-        Grass = 1,
-        Stone = 2,
+        GrassSmall = 1,
+        DirtSmall = 2,
+        Wood
     }
 }

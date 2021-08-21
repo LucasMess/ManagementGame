@@ -86,10 +86,10 @@ namespace ManagementGame.World
             chunks.Add(key, chunk);
             chunk.EntityTransfer.Subscribe(entityTransfer =>
             {
-                // Console.WriteLine($"({x},{y})");
+                Console.WriteLine($"({x},{y})");
                 int chunkX = (int)Math.Floor(entityTransfer.Entity.X / Chunk.Size / Tile.GridSize);
                 int chunkY = (int)Math.Floor(entityTransfer.Entity.Y / Chunk.Size / Tile.GridSize);
-                // Console.WriteLine($"({x},{y}) => ({chunkX},{chunkY})");
+                Console.WriteLine($"({x},{y}) => ({chunkX},{chunkY})");
                 GetChunk(chunkX, chunkY).AddEntity(entityTransfer.Entity);
             });
 

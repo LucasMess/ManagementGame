@@ -17,7 +17,7 @@ namespace ManagementGame.Objects
     class Tile : GameObject
     {
         public const int GridSize = 64;
-        public const int DrawSize = 80;
+        public const int DrawSize = 64;
         public const int MaxLightLevel = 8;
         public const int LightFalloff = 2;
 
@@ -30,6 +30,8 @@ namespace ManagementGame.Objects
 
         public int TileX;
         public int TileY;
+
+        public bool isPath = false;
 
         public Tile(int x, int y, TileType tileType)
         {
@@ -58,7 +60,7 @@ namespace ManagementGame.Objects
             {
                 float light = (LightLevel / (float)MaxLightLevel);
                 Color color = new Color(light, light, light, 1);
-                spriteBatch.Draw(Texture, DrawRectangle, Color.White);
+                spriteBatch.Draw(Texture, DrawRectangle, isPath ? Color.Red : Color.White);
             }
 
         }
@@ -69,8 +71,8 @@ namespace ManagementGame.Objects
             {
                 //spriteBatch.Draw(ContentLoader.DebugTexture, CollisionRectangle, Color.Red * .5f);
                 //spriteBatch.Draw(ContentLoader.DebugTexture, DrawRectangle, Color.Blue * .5f);
-                //spriteBatch.Draw(ContentLoader.DebugTexture, new Rectangle((int)Position.X, (int)Position.Y, 1, 1), Color.Green * .5f);
-               //spriteBatch.DrawString(ContentLoader.GetFont("x32"), LightLevel.ToString(), Position - new Vector2(8, 24), Color.White * .5f);
+                //spriteBatch.Draw(ContentLoader.DebugTexture, new Rectangle((int)Position.X, (int)Position.Y, 5, 5), Color.Red * .5f);
+                //spriteBatch.DrawString(ContentLoader.GetFont("x32"), LightLevel.ToString(), Position - new Vector2(8, 24), Color.White * .5f);
             }
         }
 
@@ -82,7 +84,7 @@ namespace ManagementGame.Objects
             }
         }
 
-        public bool IsSolid => Name != "Air";
+        public bool IsSolid => Properties[Id].IsSolid;
         public bool IsTransparent => Name == "Air";
         public bool IsLightSource => Name == "Air";
 

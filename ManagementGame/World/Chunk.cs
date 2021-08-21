@@ -130,7 +130,7 @@ namespace ManagementGame.World
 
         public void MakeLightMap()
         {
-            Console.WriteLine($"Making light map for {ChunkX}, {ChunkY}");
+            //Console.WriteLine($"Making light map for {ChunkX}, {ChunkY}");
             for (int y = 0; y < Size; y++)
             {
                 for (int x = 0; x < Size; x++)
@@ -188,6 +188,8 @@ namespace ManagementGame.World
         {
             foreach (var entity in Entities)
             {
+                entity.Update(gameTime);
+
                 PhysicsEngine.CalculateVelocity(entity, gameTime);
 
                 if (CollisionRectangle.Contains(entity.CollisionRectangle))
@@ -220,21 +222,21 @@ namespace ManagementGame.World
 
 
 
-            spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null);
-            tilingEffect = ContentLoader.GetShader("tiling");
-            //tilingEffect.Parameters["SpriteTexture1"].SetValue(ContentLoader.GetTexture2D("Grass"));
-            tilingEffect.Parameters["ChunkX"]?.SetValue(ChunkX);
-            tilingEffect.Parameters["ChunkY"]?.SetValue(ChunkY);
-            tilingEffect.Parameters["ChunkSize"]?.SetValue(Size);
-            tilingEffect.Parameters["GridSize"]?.SetValue(Tile.GridSize);
-            tilingEffect.Parameters["SolidTileTexture"]?.SetValue(solidMap);
-            tilingEffect.Parameters["Mask"]?.SetValue(mask);
-            tilingEffect.Parameters["LightMap"]?.SetValue(lightMap);
-            tilingEffect.Parameters["LightMapSize"]?.SetValue(TextureMapSize);
-            tilingEffect.Parameters["ViewMatrix"]?.SetValue(camera.GetViewMatrix());
-            //tilingEffect.Parameters["WorldMatrix"].SetValue(camera.GetWorldMatrix());
-            tilingEffect.Parameters["ProjectionMatrix"]?.SetValue(camera.GetProjectionMatrix());
-            tilingEffect.CurrentTechnique.Passes[0].Apply();
+            spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, camera.GetViewMatrix());
+            //tilingEffect = ContentLoader.GetShader("tiling");
+            ////tilingEffect.Parameters["SpriteTexture1"].SetValue(ContentLoader.GetTexture2D("Grass"));
+            //tilingEffect.Parameters["ChunkX"]?.SetValue(ChunkX);
+            //tilingEffect.Parameters["ChunkY"]?.SetValue(ChunkY);
+            //tilingEffect.Parameters["ChunkSize"]?.SetValue(Size);
+            //tilingEffect.Parameters["GridSize"]?.SetValue(Tile.GridSize);
+            //tilingEffect.Parameters["SolidTileTexture"]?.SetValue(solidMap);
+            //tilingEffect.Parameters["Mask"]?.SetValue(mask);
+            //tilingEffect.Parameters["LightMap"]?.SetValue(lightMap);
+            //tilingEffect.Parameters["LightMapSize"]?.SetValue(TextureMapSize);
+            //tilingEffect.Parameters["ViewMatrix"]?.SetValue(camera.GetViewMatrix());
+            ////tilingEffect.Parameters["WorldMatrix"].SetValue(camera.GetWorldMatrix());
+            //tilingEffect.Parameters["ProjectionMatrix"]?.SetValue(camera.GetProjectionMatrix());
+            //tilingEffect.CurrentTechnique.Passes[0].Apply();
             foreach (var tile in Tiles)
             {
                 tile.Draw(spriteBatch);
@@ -248,9 +250,10 @@ namespace ManagementGame.World
 
             spriteBatch.End();
 
-            spriteBatch.Begin(SpriteSortMode.Immediate, null, SamplerState.AnisotropicClamp, null, null, null, camera.GetViewMatrix());
-            //spriteBatch.Draw(solidMap, CollisionRectangle, debugColor * .5f);
-            //spriteBatch.Draw(ContentLoader.DebugTexture, CollisionRectangle, debugColor * .5f);
+            spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.AnisotropicClamp, null, null, null, camera.GetViewMatrix());
+            //if (Entities.Count != 0)
+            //    spriteBatch.Draw(ContentLoader.DebugTexture, CollisionRectangle, debugColor * .5f);
+            ////spriteBatch.Draw(ContentLoader.DebugTexture, CollisionRectangle, debugColor * .5f);
             foreach (var tile in Tiles)
             {
                 tile.DebugDraw(spriteBatch);

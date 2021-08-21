@@ -21,24 +21,25 @@ namespace ManagementGame.World
                     int posX = chunkX * Chunk.Size + x;
                     int posY = chunkY * Chunk.Size + y;
                     float height = GetHeight(posX);
-                    bool isCave = IsCave(posX, posY);
+                    bool isCave = IsDirt(posX, posY);
                     if (!isCave)
                     {
-                        if (posY > height + 20)
-                        {
-                            tiles[x, y] = new Tile(posX, posY, TileType.Stone);
-                        }
-                        else if (posY > height)
-                        {
-                            tiles[x, y] = new Tile(posX, posY, TileType.Grass);
-                        }
-                        else
-                        {
-                            tiles[x, y] = new Tile(posX, posY, TileType.Air);
-                        }
+                        tiles[x, y] = new Tile(posX, posY, TileType.GrassSmall);
+                        //if (posY > height + 20)
+                        //{
+                        //    tiles[x, y] = new Tile(posX, posY, TileType.DirtSmall);
+                        //}
+                        //else if (posY > height)
+                        //{
+                        //    tiles[x, y] = new Tile(posX, posY, TileType.DirtSmall);
+                        //}
+                        //else
+                        //{
+                        //    tiles[x, y] = new Tile(posX, posY, TileType.GrassSmall);
+                        //}
                     } else
                     {
-                        tiles[x, y] = new Tile(posX, posY, TileType.Air);
+                        tiles[x, y] = new Tile(posX, posY, TileType.DirtSmall);
                     }
 
                    
@@ -52,6 +53,16 @@ namespace ManagementGame.World
             float smooth = Noise.CalcPixel1D(x, 1 / 128f) / 256f * GameWorld.MaxHeightInTiles / 2;
             float rough = Noise.CalcPixel1D(x + 100, 1 / 32f) / 256f * GameWorld.MaxHeightInTiles / 2;
             return (smooth + rough * 2) / 3;
+        }
+
+        private bool IsDirt(int x, int y)
+        {
+            float baseNoise = GetNoise2D(x, y / 10, 0, 100, 32);
+            float rareLargeCaves = GetNoise2D(x + 200, y + 200, 0, 100, 128);
+            float details = GetNoise2D(x + 200, y + 200, 0, 100, 16);
+            float res = (float)Math.Pow((baseNoise * 3 + rareLargeCaves * 1 + details * 5) / 9, 2);
+            //Console.WriteLine(res);
+            return res > 4000;
         }
 
         private bool IsCave(int x, int y)

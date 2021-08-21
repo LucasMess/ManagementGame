@@ -18,7 +18,7 @@ namespace ManagementGame.Objects.Entities
             const float movementForce = 10;
             InputManager.KeyPressed(Keys.W).Subscribe(keyEvent =>
             {
-                ApplyForceY(-movementForce * 3);
+                ApplyForceY(-movementForce);
             });
             InputManager.KeyPressed(Keys.A).Subscribe(keyEvent =>
             {

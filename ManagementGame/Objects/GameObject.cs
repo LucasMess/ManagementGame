@@ -15,7 +15,7 @@ namespace ManagementGame.Objects
     /// </summary>
     class GameObject
     {
-        public Vector2 Position { get; protected set; }
+        public Vector2 Position { get; set; }
         public bool Visible { get; set; } = true;
         public float Elasticity { get; set; } = 1;
         public float X
@@ -37,16 +37,21 @@ namespace ManagementGame.Objects
 
         protected Texture2D Texture { get; set; }
         public Rectangle DrawRectangle => new Rectangle(
-            (int)Math.Ceiling(X) - DrawRectangleSize.X / 2,
-            (int)Math.Ceiling(Y) - DrawRectangleSize.Y / 2,
+            (int)Math.Ceiling(X),
+            (int)Math.Ceiling(Y),
             DrawRectangleSize.X,
             DrawRectangleSize.Y
         );
         public Rectangle CollisionRectangle => new Rectangle(
-            (int)Math.Ceiling(X) - CollisionRectangleSize.X / 2,
-            (int)Math.Ceiling(Y) - CollisionRectangleSize.Y / 2,
+            (int)Math.Ceiling(X),
+            (int)Math.Ceiling(Y),
             CollisionRectangleSize.X,
             CollisionRectangleSize.Y
+        );
+
+        public Vector2 Origin => new Vector2(
+            Position.X + CollisionRectangleSize.X / 2,
+            Position.Y + CollisionRectangleSize.Y / 2
         );
 
         protected Point DrawRectangleSize;

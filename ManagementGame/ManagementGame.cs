@@ -31,6 +31,9 @@ namespace ManagementGame
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             graphics.GraphicsProfile = GraphicsProfile.HiDef;
+            graphics.PreferredBackBufferWidth = 1920;
+            graphics.PreferredBackBufferHeight = 1080;
+            this.IsMouseVisible = true;
         }
 
         /// <summary>
@@ -43,6 +46,7 @@ namespace ManagementGame
         {
             IsFixedTimeStep = false;
             CurrentGraphicsDevice = GraphicsDevice;
+
             ViewportWidth = GraphicsDevice.Viewport.Width;
             ViewportHeight = GraphicsDevice.Viewport.Height;
 
@@ -94,7 +98,7 @@ namespace ManagementGame
             InputManager.Update(gameTime);
 
             gameWorld.Update(gameTime, camera);
-            camera.PointTo(gameWorld.player);
+           // camera.PointTo(gameWorld.player);
             frameCounter.Update(gameTime);
 
             base.Update(gameTime);

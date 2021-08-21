@@ -1,18 +1,29 @@
 ﻿- Name: Air
   Id: 0
   IsSolid: false
-- Name: Grass
+- Name: GrassSmall
   Id: 1
   WidthInTiles: 1
   HeightInTiles: 1
-- Name: Stone
+  IsSolid: false
+- Name: DirtSmall
   Id: 2
   WidthInTiles: 1
   HeightInTiles: 1
-- Name: Sand
+  IsSolid: true
+- Name: Wood
   Id: 3
   WidthInTiles: 1
   HeightInTiles: 1
+  IsSolid: true
+- Name: Grass
+  Id: 100
+  WidthInTiles: 1
+  HeightInTiles: 1
+# - Name: Sand
+#   Id: 3
+#   WidthInTiles: 1
+#   HeightInTiles: 1
 # - Name: Ball
 #   WidthInTiles: 1
 #   HeightInTiles: 1

@@ -16,10 +16,10 @@ namespace ManagementGame.Utils
             // Air friction.
             entity.ApplyForce(GameWorld.FrictionCoeffAir * -entity.Velocity);
             // Gravity.
-            if (entity.AffectedByGravity)
-            {
-                entity.ApplyForceY(GameWorld.GravitationalForce);
-            }
+            //if (entity.AffectedByGravity)
+            //{
+            //    entity.ApplyForceY(GameWorld.GravitationalForce);
+            //}
 
             // Sum forces and get acceleration.
             var forceTotal = new Microsoft.Xna.Framework.Vector2(entity.Forces.Sum(i => i.X), entity.Forces.Sum(i => i.Y));
@@ -59,8 +59,8 @@ namespace ManagementGame.Utils
                         if (entity.CollisionRectangle.Bottom > tile.CollisionRectangle.Top)
                         {
                             // Collided with top of tile.
-                            // Console.WriteLine("Collided Top");                            
-                            entity.Y = tile.CollisionRectangle.Top - entity.CollisionRectangle.Height / 2;
+                            Console.WriteLine("Collided Top");                            
+                            entity.Y = tile.CollisionRectangle.Top - entity.CollisionRectangle.Height;
                             entity.VelY = (-entity.Elasticity * entity.VelY);
                         }
                     }
@@ -69,8 +69,8 @@ namespace ManagementGame.Utils
                         if (entity.CollisionRectangle.Top < tile.CollisionRectangle.Bottom)
                         {
                             // Collided from below.
-                            // Console.WriteLine("Collided below");
-                            entity.Y = tile.CollisionRectangle.Bottom + entity.CollisionRectangle.Height / 2;
+                            Console.WriteLine("Collided below");
+                            entity.Y = tile.CollisionRectangle.Bottom;
                             entity.VelY = -entity.Elasticity * entity.VelY;
 
                         }
@@ -98,9 +98,9 @@ namespace ManagementGame.Utils
                         if (entity.CollisionRectangle.Right > tile.CollisionRectangle.Left)
                         {
                             // Collided from left.
-                            // Console.WriteLine("Collided left");
+                            Console.WriteLine("Collided left");
 
-                            entity.X = tile.CollisionRectangle.Left - entity.CollisionRectangle.Width / 2;
+                            entity.X = tile.CollisionRectangle.Left - entity.CollisionRectangle.Width;
                             entity.VelX = (int)(-entity.Elasticity * entity.VelX);
 
                         }
@@ -110,9 +110,9 @@ namespace ManagementGame.Utils
                         if (entity.CollisionRectangle.Left < tile.CollisionRectangle.Right)
                         {
                             // Collided from right.
-                            // Console.WriteLine("Collided right");
+                            Console.WriteLine("Collided right");
 
-                            entity.X = tile.CollisionRectangle.Right + entity.CollisionRectangle.Width / 2;
+                            entity.X = tile.CollisionRectangle.Right;
                             entity.VelX = (int)(-entity.Elasticity * entity.VelX);
 
                         }
