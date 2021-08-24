@@ -38,7 +38,6 @@ namespace ManagementGame.Objects
         public void ApplyForceY(float force) => ApplyForce(new Vector2(0, force));
 
 
-
         public float VelX
         {
             set { Velocity = new Vector2(value, Velocity.Y); }
@@ -48,6 +47,11 @@ namespace ManagementGame.Objects
         {
             set { Velocity = new Vector2(Velocity.X, value); }
             get { return Velocity.Y; }
+        }
+
+        public bool InRangeOf(Entity entity)
+        {
+            return entity.CollisionRectangle.Intersects(CollisionRectangle);
         }
     }
 

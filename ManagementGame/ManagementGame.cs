@@ -65,9 +65,7 @@ namespace ManagementGame
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            ContentLoader.LoadTileTextures(Content);
-            ContentLoader.LoadShaders(Content);
-            ContentLoader.LoadFonts(Content);
+            ContentLoader.LoadAll(Content);
             gameWorld = new GameWorld();
             camera = new Camera(GraphicsDevice.Viewport);
 

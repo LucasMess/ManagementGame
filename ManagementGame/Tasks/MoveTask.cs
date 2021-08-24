@@ -12,7 +12,7 @@ namespace ManagementGame.Tasks
 {
     class MoveTask : ActorTask
     {
-        float TargetRadius = (float)Math.Pow((float)Tile.GridSize, 2f);
+        float TargetRadius = (float)Math.Pow((float)Tile.GridSize, 2f) / 2;
         const int MaxForce = 10;
 
         Vector2 destination;
@@ -45,7 +45,6 @@ namespace ManagementGame.Tasks
                 Vector2 distance = nextPoint - actor.Position;
                 if (distance.LengthSquared() < TargetRadius)
                 {
-                    Console.WriteLine("Arrived on node");
                     currIdx++;
                 }
                 else
@@ -61,13 +60,11 @@ namespace ManagementGame.Tasks
                         Vector2 dir = Vector2.Normalize(distance);
                         force = dir * MaxForce;
                     }
-                    Console.WriteLine(force);
                     actor.ApplyForce(force);
 
                 }
             } else
             {
-                Console.WriteLine("Finished");
                 Finish();
             }
 

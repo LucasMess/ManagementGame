@@ -137,5 +137,17 @@ namespace ManagementGame.World
             }
             else return null;
         }
+
+        public Entity GetEntityAt(float worldX, float worldY)
+        {
+            int chunkX = (int)Math.Floor(worldX / (float)Chunk.Size / Tile.GridSize);
+            int chunkY = (int)Math.Floor(worldY / (float)Chunk.Size / Tile.GridSize);
+            var chunk = GetChunk(chunkX, chunkY, false);
+            if (chunk != null)
+            {
+                return chunk.GetEntityAt((int)worldX, (int)worldY);
+            }
+            else return null;
+        }
     }
 }

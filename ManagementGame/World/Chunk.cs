@@ -222,7 +222,7 @@ namespace ManagementGame.World
 
 
 
-            spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, camera.GetViewMatrix());
+            spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointWrap, null, null, null, camera.GetViewMatrix());
             //tilingEffect = ContentLoader.GetShader("tiling");
             ////tilingEffect.Parameters["SpriteTexture1"].SetValue(ContentLoader.GetTexture2D("Grass"));
             //tilingEffect.Parameters["ChunkX"]?.SetValue(ChunkX);
@@ -250,7 +250,7 @@ namespace ManagementGame.World
 
             spriteBatch.End();
 
-            spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.AnisotropicClamp, null, null, null, camera.GetViewMatrix());
+            spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointWrap, null, null, null, camera.GetViewMatrix());
             //if (Entities.Count != 0)
             //    spriteBatch.Draw(ContentLoader.DebugTexture, CollisionRectangle, debugColor * .5f);
             ////spriteBatch.Draw(ContentLoader.DebugTexture, CollisionRectangle, debugColor * .5f);
@@ -265,6 +265,25 @@ namespace ManagementGame.World
         public void AddEntity(Entity entity)
         {
             Entities.Add(entity);
+        }
+
+        public void SpawnEntity(Entity entity, int x, int y)
+        {
+            entity.X = x;
+            entity.Y = y;
+            Entities.Add(entity);
+        }
+
+        public Entity GetEntityAt(int x, int y)
+        {
+            foreach (var entity in Entities)
+            {
+                if (entity.CollisionRectangle.Contains(x, y))
+                {
+                    return entity;
+                }
+            }
+            return null;
         }
 
         public Tile GetTile(int x, int y)

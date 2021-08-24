@@ -65,6 +65,13 @@ namespace ManagementGame.World
             if (Mouse.GetState().RightButton == ButtonState.Pressed && !pressed)
             {
                 pressed = true;
+
+                Tile tile = GetTileAt(mousePos.X, mousePos.Y);
+                Entity entity = GetEntityAt(mousePos.X, mousePos.Y);
+                if (entity is Interactable)
+                {
+                    actor.GiveTask(new InteractTask(entity));
+                }
                 actor.GiveTask(new MoveTask(mousePos));
             }
             if (Mouse.GetState().RightButton == ButtonState.Released)
@@ -89,18 +96,21 @@ namespace ManagementGame.World
 
         public void SpawnEntity(Entity entity, int x, int y)
         {
-            entity.X = x;
-            entity.Y = y;
             int chunkX = x / Chunk.Size / Tile.GridSize;
             int chunkY = y / Chunk.Size / Tile.GridSize;
-            chunkManager.GetChunk(chunkX, chunkY).AddEntity(entity);
+            chunkManager.GetChunk(chunkX, chunkY).SpawnEntity(entity, x, y);
         }
 
         public Tile GetTileAt(float x, float y)
         {
             return chunkManager.GetTileAt(x, y);
         }
-        
+
+        public Entity GetEntityAt(float x, float y)
+        {
+            return chunkManager.GetEntityAt(x, y);
+        }
+
 
         public List<Vector2> Pathfind(Vector2 source, Vector2 destination)
         {

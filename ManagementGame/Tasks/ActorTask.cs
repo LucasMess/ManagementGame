@@ -34,6 +34,24 @@ namespace ManagementGame.Tasks
             State = TaskState.Finished;
         }
 
+        public bool IsFinished(ActorTask task, Actor actor, GameWorld gameWorld)
+        {
+            switch (task.State)
+            {
+                case TaskState.Waiting:
+                    task.Start(actor, gameWorld);
+                    break;
+                case TaskState.Started:
+                    task.Continue(actor, gameWorld);
+                    break;
+                case TaskState.Finished:
+                    return true;
+                default:
+                    break;
+            }
+            return false;
+        }
+
         protected abstract void OnStart(Actor actor, GameWorld gameWorld);
         protected abstract void OnContinue(Actor actor, GameWorld gameWorld);
 

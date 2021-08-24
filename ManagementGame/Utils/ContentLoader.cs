@@ -17,26 +17,53 @@ namespace ManagementGame.Utils
         static Dictionary<string, Effect> shaders;
         static Dictionary<string, SpriteFont> fonts;
 
-        public static void LoadTileTextures(ContentManager content)
+        public static void LoadAll(ContentManager content)
         {
+            ContentLoader.LoadTileProperties(content);
+            ContentLoader.LoadTextures(content);
+            ContentLoader.LoadShaders(content);
+            ContentLoader.LoadFonts(content);
+        }
+
+        public static void LoadTextures(ContentManager content)
+        {
+            Console.WriteLine($"Loading textures");
             textures = new Dictionary<string, Texture2D>();
 
+            string path = Path.Combine(FileLoader.DistDirectory, "Content", "Art");
+            var files = Directory.GetFiles(path);
+
+            foreach (var file in files)
+            {
+                var fileName = Path.GetFileName(file);
+                if (fileName.EndsWith(".xnb"))
+                {
+                    var key = fileName.Split('.')[0];
+                    Console.WriteLine($"Loading {key}");
+                    textures.Add(key, content.Load<Texture2D>("Art/" + key));
+                }
+            }
+
+
+            //foreach (var tile in tiles)
+            //{
+            //    try
+            //    {
+            //        Console.WriteLine($"Loading {tile.Name}");
+            //        textures.Add(tile.Name, content.Load<Texture2D>($"Art/{tile.Name}"));
+            //    }
+            //    catch (ContentLoadException e)
+            //    {
+            //        Console.WriteLine($"Could not find texture for {tile.Name}");
+            //    }
+            //}
+        }
+
+        public static void LoadTileProperties(ContentManager content)
+        {
             string path = Path.Combine(FileLoader.DistDirectory, "Data", "tiles.yaml");
             var tiles = FileLoader.LoadYaml<TileProperties[]>(path);
             Tile.Properties = tiles.OrderBy(x => x.Id).ToArray();
-
-            foreach (var tile in tiles)
-            {
-                try
-                {
-                    Console.WriteLine($"Loading {tile.Name}");
-                    textures.Add(tile.Name, content.Load<Texture2D>($"Art/{tile.Name}"));
-                }
-                catch (ContentLoadException e)
-                {
-                    Console.WriteLine($"Could not find texture for {tile.Name}");
-                }
-            }
         }
 
         public static void LoadShaders(ContentManager content)

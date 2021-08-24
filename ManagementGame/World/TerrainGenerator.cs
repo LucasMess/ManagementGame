@@ -4,13 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ManagementGame.Objects;
+using ManagementGame.Objects.Entities;
 using ManagementGame.Objects.Tiles;
 using SimplexNoise;
 
 namespace ManagementGame.World
 {
     class TerrainGenerator
-    { 
+    {
+        private Random random = new Random();
+
         public Chunk GenerateChunk(int chunkX, int chunkY, ChunkManager chunkManager)
         {
             Tile[,] tiles = new Tile[Chunk.Size, Chunk.Size];
@@ -45,7 +48,18 @@ namespace ManagementGame.World
                    
                 }
             }
-            return new Chunk(chunkX, chunkY, tiles, chunkManager);
+
+            var chunk = new Chunk(chunkX, chunkY, tiles, chunkManager);
+
+            foreach (var tile in tiles)
+            {
+                if (random.NextDouble() < .1)
+                {
+                    chunk.SpawnEntity(new Bush(), (int)tile.X, (int)tile.Y);
+                }
+            }
+ 
+            return chunk;
         }
 
         private float GetHeight(int x)
